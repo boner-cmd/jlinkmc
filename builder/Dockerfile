@@ -1,8 +1,10 @@
-FROM curlimages/curl
+FROM alpine
 
-RUN apk update && apk add --no-cache bash
+RUN apk update && apk add --no-cache bash curl
 
 COPY builder .
 COPY template .
 
-ENTRYPOINT ["builder"]
+# RUN bash builder
+
+CMD ["bash", "./builder"]
