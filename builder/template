@@ -4,6 +4,9 @@ FROM alpine AS prepack
 # download binutils and deps so they won't need to be downloaded again later
 # also download zstd since apk update occurs here
 
+ENV SASHA_GERRAND_KEY="SASHA_GERRAND_KEY_"
+ENV SASHA_GERRAND_KEY_URL="SASHA_GERRAND_KEY_URL_"
+
 RUN mkdir /tmp/binutilscpy
 
 WORKDIR /tmp/binutilscpy
@@ -16,9 +19,8 @@ RUN apk update \
 	&& apk add /tmp/binutilscpy/* \
 				zstd \
 				curl \
-	&& curl -LfsS SGKEYURL -o /etc/apk/keys/sgerrand.rsa.pub \
-    && SG_RSA_SHA256="SGKEY" \
-    && echo "${SG_RSA_SHA256} */etc/apk/keys/sgerrand.rsa.pub" | sha256sum -c -
+	&& curl -LfsS "${SASHA_GERRAND_KEY_URL}" -o /etc/apk/keys/sgerrand.rsa.pub \
+    && echo "${SASHA_GERRAND_KEY} */etc/apk/keys/sgerrand.rsa.pub" | sha256sum -c -
 
 # AdoptOpenJDK image on an Alpine base
 FROM adoptopenjdk/OPENJDKVER:alpine AS jlink
@@ -44,25 +46,45 @@ RUN mkdir gcc libz
 
 WORKDIR /tmp/depends
 
-RUN curl -LfsS GCCFULLURL -O \
-	&& curl -LfsS GLIBCFULLURL GLIBCBINURL GLIBCI18NURL -O -O -O \
-	&& curl -LfsS ZLIBFULLURL -O \
-	&& echo "GCCSUM GCCFILE" | sha256sum -c - \
-	&& echo "GLIBCSUM GLIBCFILE" | sha256sum -c - \
-	&& echo "GLIBCBINSUM GLIBCBINFILE" | sha256sum -c - \
-	&& echo "GLIBCI18NFILE GLIBCI18NFILE" | sha256sum -c - \
-	&& echo "ZLIBSUM ZLIBFILE" | sha256sum -c - \
+ENV GCC_FULL_URL="GCC_FULL_URL_"
+ENV GCC_LIBS_VER="GCC_LIBS_VER_"
+ENV GCC_FILENAME="GCC_FILENAME_"
+ENV GCC_FILE_SUM="GCC_SUM_"
+ENV GCC_TAR_NAME="GCC_TAR_"
+ENV GLIBC_FULL_URL="GLIBC_FULL_URL_"
+ENV GLIBC_VER="GLIBC_VER_"
+ENV GLIBC_FILENAME="GLIBC_FILENAME_"
+ENV GLIBC_FILE_SUM="GLIBC_FILE_SUM_"
+ENV GLIBC_BIN_URL="GLIBC_BIN_URL_"
+ENV GLIBC_BIN_FILENAME="GLIBC_BIN_FILENAME_"
+ENV GLIBC_BIN_SUM="GLIBC_BIN_SUM_"
+ENV GLIBC_I18N_URL="GLIBC_I18N_URL_"
+ENV GLIBC_I18N_FILENAME="GLIBC_I18N_FILENAME_"
+ENV GLIBC_I18N_SUM="GLIBC_I18N_SUM_"
+ENV ZLIB_FULL_URL="ZLIB_FULL_URL_"
+ENV ZLIB_VER="ZLIB_VER_"
+ENV ZLIB_FILENAME="ZLIB_FILENAME_"
+ENV ZLIB_FILE_SUM="ZLIB_FILE_SUM_"
+
+RUN curl -LfsS "${GCC_FULL_URL}" -O \
+	&& curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
+	&& curl -LfsS "${ZLIB_FULL_URL}" -O \
+	&& echo "${GCC_FILE_SUM}  ${GCC_FILENAME}" | sha256sum -c - \
+	&& echo "${GLIBC_FILE_SUM}  ${GLIBC_FILENAME}" | sha256sum -c - \
+	&& echo "${GLIBC_BIN_SUM}  ${GLIBC_BIN_FILENAME}" | sha256sum -c - \
+	&& echo "${GLIBC_I18N_SUM}  ${GLIBC_I18N_FILENAME}" | sha256sum -c - \
+	&& echo "${ZLIB_FILE_SUM}  ${ZLIB_FILENAME}" | sha256sum -c - \
 	&& apk del --purge curl \
-	&& apk add --no-cache glibc-GLIBCVER.apk \
-					glibc-bin-GLIBCVER.apk \
-					glibc-i18n-GLIBCVER.apk \
+	&& apk add --no-cache glibc-${GLIBC_VER}.apk \
+					glibc-bin-${GLIBC_VER}.apk \
+					glibc-i18n-${GLIBC_VER}.apk \
     && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
     && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
-	&& unzstd GCCFILE -o GCCTAR \
-	&& tar -xf GCCTAR -C /tmp/gcc \
+	&& unzstd "${GCC_FILENAME}" -o "${GCC_TAR_NAME}" \
+	&& tar -xf "${GCC_TAR_NAME}" -C /tmp/gcc \
     && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
     && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
-    && tar -xf ZLIBFILE -C /tmp/libz \
+    && tar -xf ${ZLIB_FILENAME} -C /tmp/libz \
     && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
 	&& apk del --purge binutils \
 						glibc-i18n \
