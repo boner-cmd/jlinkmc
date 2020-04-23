@@ -12,7 +12,7 @@ find_pack() {
   output="$(sed "${sedargs}" <(printf %s "${1}") \
     | sort \
     | tail -n 1)"
-  echo "$output"
+  printf "%s\n" "$output"
 }
 
 main() {
@@ -65,7 +65,7 @@ main() {
     || exit 1
 
   declare -a sums
-  for file in *; do
+  for file in ./*; do
     sums+=("$(sha256sum "${file}" | head -c 64)")
   done
   readonly sums
