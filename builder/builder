@@ -20,48 +20,48 @@ main() {
     echo "No template in current directory." 1>&2 && exit 1
   fi
 
-  readonly GCCLIBSURL="https://archive.archlinux.org/packages/g/gcc-libs"
-  readonly GLIBCURL="https://github.com/sgerrand/alpine-pkg-glibc/releases"
-  readonly ZLIBURL="https://archive.archlinux.org/packages/z/zlib"
-  readonly SGKEYURL="https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub"
+  readonly GCC_BASE_URL="https://archive.archlinux.org/packages/g/gcc-libs"
+  readonly GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases"
+  readonly ZLIB_BASE_URL="https://archive.archlinux.org/packages/z/zlib"
+  readonly SASHA_GERRAND_KEY_URL="https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub"
 
-  readonly SGKEY="$(curl -LfsS ${SGKEYURL})"
+  readonly SASHA_GERRAND_KEY="$(curl -LfsS ${SASHA_GERRAND_KEY_URL})"
 
-  GCCFILE="$(curl -LfsS ${GCCLIBSURL})" \
-    && GCCFILE="$(find_pack "${GCCFILE}")" \
-    && readonly GCCFILE \
+  GCC_FILENAME="$(curl -LfsS ${GCC_BASE_URL})" \
+    && GCC_FILENAME="$(find_pack "${GCC_FILENAME}")" \
+    && readonly GCC_FILENAME \
     || exit 1
-  ZLIBFILE="$(curl -LfsS ${ZLIBURL})" \
-    && ZLIBFILE="$(find_pack "${ZLIBFILE}")" \
-    && readonly ZLIBFILE \
+  ZLIB_FILENAME="$(curl -LfsS ${ZLIB_BASE_URL})" \
+    && ZLIB_FILENAME="$(find_pack "${ZLIB_FILENAME}")" \
+    && readonly ZLIB_FILENAME \
     || exit 1
-  GLIBCVER="$(curl -sS ${GLIBCURL}/latest)" \
-    && GLIBCVER="${GLIBCVER#*tag/}" \
-    && GLIBCVER="${GLIBCVER%\"*}" \
-    && readonly GLIBCVER \
+  GLIBC_VER="$(curl -sS ${GLIBC_BASE_URL}/latest)" \
+    && GLIBC_VER="${GLIBC_VER#*tag/}" \
+    && GLIBC_VER="${GLIBC_VER%\"*}" \
+    && readonly GLIBC_VER \
     || exit 1
 
-  readonly GCCTAR="${GCCFILE%????}"
-  readonly GCCFULLURL="${GCCLIBSURL}/${GCCFILE}"
-  readonly ZLIBFULLURL="${ZLIBURL}/${ZLIBFILE}"
-  readonly GLIBCFULLURL="${GLIBCURL}/download/${GLIBCVER}/glibc-${GLIBCVER}.apk"
-  readonly GLIBCBINURL="${GLIBCURL}/download/${GLIBCVER}/glibc-bin-${GLIBCVER}.apk"
-  readonly GLIBCI18NURL="${GLIBCURL}/download/${GLIBCVER}/glibc-i18n-${GLIBCVER}.apk"
-  readonly GLIBCFILE="glibc-$GLIBCVER.apk"
-  readonly GLIBCBINFILE="glibc-bin-$GLIBCVER.apk"
-  readonly GLIBCI18NFILE="glibc-i18n-$GLIBCVER.apk"
-  readonly GCCLIBSVER="${GCCFILE%\.pkg*}"
-  readonly ZLIBVER="${ZLIBFILE%\.pkg*}"
+  readonly GCC_TAR_NAME="${GCC_FILENAME%????}"
+  readonly GCC_FULL_URL="${GCC_BASE_URL}/${GCC_FILENAME}"
+  readonly ZLIB_FULL_URL="${ZLIB_BASE_URL}/${ZLIB_FILENAME}"
+  readonly GLIBC_FULL_URL="${GLIBC_BASE_URL}/download/${GLIBC_VER}/glibc-${GLIBC_VER}.apk"
+  readonly GLIBC_BIN_URL="${GLIBC_BASE_URL}/download/${GLIBC_VER}/glibc-bin-${GLIBC_VER}.apk"
+  readonly GLIBC_I18N_URL="${GLIBC_BASE_URL}/download/${GLIBC_VER}/glibc-i18n-${GLIBC_VER}.apk"
+  readonly GLIBC_FILENAME="glibc-$GLIBC_VER.apk"
+  readonly GLIBC_BIN_FILENAME="glibc-bin-$GLIBC_VER.apk"
+  readonly GLIBC_I18N_FILENAME="glibc-i18n-$GLIBC_VER.apk"
+  readonly GCC_LIBS_VER="${GCC_FILENAME%\.pkg*}"
+  readonly ZLIB_VER="${ZLIB_FILENAME%\.pkg*}"
 
   if [ ! -d working ]; then
     mkdir /working
   fi
   cp template /working/template
   cd /working || exit 1
-  # file downloads are slow; output not suppressed to show script did not hang
-  curl -Lf "${GCCFULLURL}" "${ZLIBFULLURL}" -O -O \
+  file downloads are slow; output not suppressed to show script did not hang
+  curl -Lf "${GCC_FULL_URL}" "${ZLIB_FULL_URL}" -O -O \
     || exit 1
-  curl -Lf "${GLIBCFULLURL}" "${GLIBCBINURL}" "${GLIBCI18NURL}" -O -O -O \
+  curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
     || exit 1
 
   declare -a sums
@@ -71,36 +71,35 @@ main() {
   readonly sums
 
   # indices are hardcoded to assume only these five (5) files in this order
-  readonly GCCSUM="${sums[0]}"
-  readonly GLIBCSUM="${sums[1]}"
-  readonly GLIBCBINSUM="${sums[2]}"
-  readonly GLIBCI18NSUM="${sums[3]}"
-  readonly ZLIBSUM="${sums[4]}"
+  readonly GCC_FILE_SUM="${sums[0]}"
+  readonly GLIBC_FILE_SUM="${sums[1]}"
+  readonly GLIBC_BIN_SUM="${sums[2]}"
+  readonly GLIBC_I18N_SUM="${sums[3]}"
+  readonly ZLIB_FILE_SUM="${sums[4]}"
 
-  sed -i "s,GCCFULLURL,${GCCFULLURL},; \
-    s,GLIBCFULLURL,${GLIBCFULLURL},; \
-    s,GLIBCBINURL,${GLIBCBINURL},; \
-    s,GLIBCI18NURL,${GLIBCI18NURL},; \
-    s,ZLIBFULLURL,${ZLIBFULLURL},; \
-    s,GCCFILE,${GCCFILE},; \
-    s,GCCSUM,${GCCSUM},; \
-    s,GCCTAR,${GCCTAR},; \
-    s,GLIBCFILE,${GLIBCFILE},; \
-    s,GLIBCSUM,${GLIBCSUM},; \
-    s,GLIBCBINFILE,${GLIBCBINFILE},; \
-    s,GLIBCBINSUM,${GLIBCBINSUM},; \
-    s,GLIBCI18NFILE,${GLIBCI18NFILE},; \
-    s,GLIBCI18NSUM,${GLIBCI18NSUM},; \
-    s,SGKEYURL,${SGKEYURL},; \
-    s,SGKEY,${SGKEY},; \
-    s,ZLIBFILE,${ZLIBFILE},; \
-    s,ZLIBSUM,${ZLIBSUM},; \
-    s,GCCLIBSVER,${GCCLIBSVER},; \
-    s,ZLIBVER,${ZLIBVER},; \
-    s,GLIBCVER,${GLIBCVER},g" template
-    # GCCLIBSVER unused in template
-    # ZLIBVER unused in template
- cat template
+# TODO find which one of these sed commands is bricking the whole thing
+  sed -i "s,SASHA_GERRAND_KEY__,${SASHA_GERRAND_KEY},;
+    s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
+    s,GCC_FULL_URL_,${GCC_FULL_URL},; \
+    s,GCC_LIBS_VER_,${GCC_LIBS_VER},; \
+    s,GCC_FILENAME_,${GCC_FILENAME},; \
+    s,GCC_FILE_SUM_,${GCC_FILE_SUM},; \
+    s,GCC_TAR_NAME_,${GCC_TAR_NAME},; \
+    s,GLIBC_FULL_URL_,${GLIBC_FULL_URL},; \
+    s,GLIBC_VER_,${GLIBC_VER},; \
+    s,GLIBC_FILENAME_,${GLIBC_FILENAME},; \
+    s,GLIBC_FILE_SUM_,${GLIBC_FILE_SUM},; \
+    s,GLIBC_BIN_URL_,${GLIBC_BIN_URL},; \
+    s,GLIBC_BIN_FILENAME_,${GLIBC_BIN_FILENAME},; \
+    s,GLIBC_BIN_SUM_,${GLIBC_BIN_SUM},; \
+    s,GLIBC_I18N_URL_,${GLIBC_I18N_URL},; \
+    s,GLIBC_I18N_FILENAME_,${GLIBC_I18N_FILENAME},; \
+    s,GLIBC_I18N_SUM_,${GLIBC_I18N_SUM},; \
+    s,ZLIB_FULL_URL_,${ZLIB_FULL_URL},; \
+    s,ZLIB_VER_,${ZLIB_VER},; \
+    s,ZLIB_FILENAME_,${ZLIB_FILENAME},; \
+    s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template
+  cat template
 }
 
 main
