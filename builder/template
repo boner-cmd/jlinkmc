@@ -4,7 +4,7 @@ FROM alpine AS prepack
 # download binutils and deps so they won't need to be downloaded again later
 # also download zstd since apk update occurs here
 
-ENV SASHA_GERRAND_KEY="SASHA_GERRAND_KEY_"
+ENV SASHA_GERRAND_KEY="SASHA_GERRAND_KEY__"
 ENV SASHA_GERRAND_KEY_URL="SASHA_GERRAND_KEY_URL_"
 
 RUN mkdir /tmp/binutilscpy
