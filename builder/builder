@@ -58,7 +58,7 @@ main() {
   fi
   cp template /working/template
   cd /working || exit 1
-
+  # file downloads are slow; output not suppressed to show script did not hang
   curl -Lf "${GCCFULLURL}" "${ZLIBFULLURL}" -O -O \
     || exit 1
   curl -Lf "${GLIBCFULLURL}" "${GLIBCBINURL}" "${GLIBCI18NURL}" -O -O -O \
@@ -77,27 +77,27 @@ main() {
   readonly GLIBCI18NSUM="${sums[3]}"
   readonly ZLIBSUM="${sums[4]}"
 
-  sed -i "s,GCCFULLURL,$GCCFULLURL,; \
-    s,GLIBCFULLURL,$GLIBCFULLURL,; \
-    s,GLIBCBINURL,$GLIBCBINURL,; \
-    s,GLIBCI18NURL,$GLIBCI18NURL,; \
-    s,ZLIBFULLURL,$ZLIBFULLURL,; \
-    s,GCCFILE,$GCCFILE,; \
-    s,GCCSUM,$GCCSUM,; \
-    s,GCCTAR,$GCCTAR,; \
-    s,GLIBCFILE,$GLIBCFILE,; \
-    s,GLIBCSUM,$GLIBCSUM,; \
-    s,GLIBCBINFILE,$GLIBCBINFILE,; \
-    s,GLIBCBINSUM,$GLIBCBINSUM,; \
-    s,GLIBCI18NFILE,$GLIBCI18NFILE,; \
-    s,GLIBCI18NSUM,$GLIBCI18NSUM,; \
-    s,SGKEYURL,$SGKEYURL,; \
-    s,SGKEY,$SGKEY,; \
-    s,ZLIBFILE,$ZLIBFILE,; \
-    s,ZLIBSUM,$ZLIBSUM,; \
-    s,GCCLIBSVER,$GCCLIBSVER,; \
-    s,ZLIBVER,$ZLIBVER,; \
-    s,GLIBCVER,$GLIBCVER,g" template
+  sed -i "s,GCCFULLURL,${GCCFULLURL},; \
+    s,GLIBCFULLURL,${GLIBCFULLURL},; \
+    s,GLIBCBINURL,${GLIBCBINURL},; \
+    s,GLIBCI18NURL,${GLIBCI18NURL},; \
+    s,ZLIBFULLURL,${ZLIBFULLURL},; \
+    s,GCCFILE,${GCCFILE},; \
+    s,GCCSUM,${GCCSUM},; \
+    s,GCCTAR,${GCCTAR},; \
+    s,GLIBCFILE,${GLIBCFILE},; \
+    s,GLIBCSUM,${GLIBCSUM},; \
+    s,GLIBCBINFILE,${GLIBCBINFILE},; \
+    s,GLIBCBINSUM,${GLIBCBINSUM},; \
+    s,GLIBCI18NFILE,${GLIBCI18NFILE},; \
+    s,GLIBCI18NSUM,${GLIBCI18NSUM},; \
+    s,SGKEYURL,${SGKEYURL},; \
+    s,SGKEY,${SGKEY},; \
+    s,ZLIBFILE,${ZLIBFILE},; \
+    s,ZLIBSUM,${ZLIBSUM},; \
+    s,GCCLIBSVER,${GCCLIBSVER},; \
+    s,ZLIBVER,${ZLIBVER},; \
+    s,GLIBCVER,${GLIBCVER},g" template
     # GCCLIBSVER unused in template
     # ZLIBVER unused in template
  cat template
