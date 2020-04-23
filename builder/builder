@@ -1,0 +1,99 @@
+#!/bin/bash
+# bash required to pass awk arguments as an array
+
+find_pack() {
+  # using sed because builtins would require clumsy iterating
+  declare -a sedargs
+  # GNU basic regular expressions (BREs) require \| to use alternation
+  sedargs=("s,<a href=\",,g;" "s,</a>,,g;" "/^<h\|^<b\|<\/\|sig/d;" "s,\".*,,;")
+  readonly sedargs
+  output="$(sed "${sedargs[@]}" < "$1" \
+    | sort -o \
+    | tail -n 1)"
+  echo "$output"
+}
+
+main() {
+  if [ ! -e template ]; then
+    echo "No template in current directory." 1>&2 && exit 1
+  fi
+  readonly GCCLIBSURL="https://archive.archlinux.org/packages/g/gcc-libs"
+  readonly GLIBCURL="https://github.com/sgerrand/alpine-pkg-glibc/releases"
+  readonly ZLIBURL="https://archive.archlinux.org/packages/z/zlib"
+  readonly SGKEYURL="https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub"
+  readonly SGKEY="$(curl -LfsS ${SGKEYURL})"
+  GCCFILE="$(curl -LfsS ${GCCLIBSURL})"
+  GCCFILE="$(find_pack "${GCCFILE}")" # TODO test this syntax
+  readonly GCCFILE
+  ZLIBFILE="$(curl -LfsS ${ZLIBURL})"
+  ZLIBFILE="$(find_pack "${ZLIBFILE}")" # TODO test this syntax
+  readonly ZLIBFILE
+  # readonly GCCFILE="$(curl -LfsS ${GCCLIBSURL} \
+    # | sed "${sedargs[@]}" \
+    # | sort -o \
+    # | tail -n 1)"
+  # readonly ZLIBFILE="$(curl -LfsS ${ZLIBURL} \
+    # | sed "${sedargs[@]}" \
+    # | sort -o \
+    # | tail -n 1)"
+  readonly GCCTAR="${GCCFILE%????}"  
+  readonly GCCFULLURL="${GCCLIBSURL}/${GCCFILE}"
+  readonly GCCLIBSVER="${GCCFILE%\.pkg*}"
+  readonly ZLIBFULLURL="${ZLIBURL}/${ZLIBFILE}"
+  readonly ZLIBVER="${ZLIBFILE%\.pkg*}"
+  GLIBCVER="$(curl -sS ${GLIBCURL}/latest)" \
+    && GLIBCVER="${GLIBCVER#*tag/}" \
+    && GLIBCVER="${GLIBCVER%\"*}" \
+    && readonly GLIBCVER
+  readonly GLIBCFULLURL="${GLIBCURL}/download/${GLIBCVER}/glibc-${GLIBCVER}.apk"
+  readonly GLIBCBINURL="${GLIBCURL}/download/${GLIBCVER}/glibc-bin-${GLIBCVER}.apk"
+  readonly GLIBCI18NURL="${GLIBCURL}/download/${GLIBCVER}/glibc-i18n-${GLIBCVER}.apk"
+  readonly GLIBCFILE="glibc-$GLIBCVER.apk"
+  readonly GLIBCBINFILE="glibc-bin-$GLIBCVER.apk"
+  readonly GLIBCI18NFILE="glibc-i18n-$GLIBCVER.apk"
+  
+  mkdir /working
+  mv template /working/template
+  cd /working || exit
+  curl -LfsS "${GCCFULLURL}" "${ZLIBFULLURL}" -O -O
+  curl -LfsS "${GLIBCFULLURL}" "${GLIBCBINURL}" "${GLIBCI18NURL}" -O -O -O
+
+  declare -a sums
+  declare -a filelist
+  readarray filelist < <(ls -A)
+  readonly filelist
+  for file in "${filelist[@]}"; do
+    sums+=("$(sha256sum "${filelist[$file]}" | head -c 64)")
+  done
+  readonly sums 
+
+  readonly GCCSUM="${sums[0]}"
+  readonly GLIBCSUM="${sums[1]}"
+  readonly GLIBCBINSUM="${sums[2]}"
+  readonly GLIBCI18NSUM="${sums[3]}"
+  readonly ZLIBSUM="${sums[4]}"
+
+  sed -i "s,GCCFULLURL,$GCCFULLURL,; \
+    s,GLIBCFULLURL,$GLIBCFULLURL,; \
+    s,GLIBCBINURL,$GLIBCBINURL,; \
+    s,GLIBCI18NURL,$GLIBCI18NURL,; \
+    s,ZLIBFULLURL,$ZLIBFULLURL,; \
+    s,GCCFILE,$GCCFILE,; \
+    s,GCCSUM,$GCCSUM,; \
+    s,GCCTAR,$GCCTAR,; \
+    s,GLIBCFILE,$GLIBCFILE,; \
+    s,GLIBCSUM,$GLIBCSUM,; \
+    s,GLIBCBINFILE,$GLIBCBINFILE,; \
+    s,GLIBCBINSUM,$GLIBCBINSUM,; \
+    s,GLIBCI18NFILE,$GLIBCI18NFILE,; \
+    s,GLIBCI18NSUM,$GLIBCI18NSUM,; \
+    s,SGKEYURL,$SGKEYURL,; \
+    s,SGKEY,$SGKEY,; \
+    s,ZLIBFILE,$ZLIBFILE,; \
+    s,ZLIBSUM,$ZLIBSUM,; \
+    s,GLIBCVER,$GLIBCVER,g" template
+      
+  cat template
+}
+
+main
