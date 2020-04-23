@@ -98,7 +98,9 @@ main() {
     s,ZLIB_FULL_URL_,${ZLIB_FULL_URL},; \
     s,ZLIB_VER_,${ZLIB_VER},; \
     s,ZLIB_FILENAME_,${ZLIB_FILENAME},; \
-    s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template
+    s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template \
+  || exit 1
+
   cat template
 }
 
