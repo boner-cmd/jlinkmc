@@ -1,24 +1,21 @@
 #!/bin/bash
 # bash required to pass awk args in an array
-# sed args passed in an array for convenience
 
 find_pack() {
   # using sed because builtins would require iterating
-  declare -a sedargs
   # GNU basic regular expressions (BREs) require \| to use alternation
-  sedargs=("s,<a href=\",,g;" \
-    "s,</a>,,g;" \
-    "/^<h\|^<b\|<\/\|sig/d;" \
-    "s,\".*,,;")
+  sedargs="s,<a href=\",,g; \
+    s,</a>,,g; \
+    /^<h\|^<b\|<\/\|sig/d; \
+    s,\".*,,"
   readonly sedargs
-  output="$(sed "${sedargs[@]}" < "$1" \
-    | sort -o \
+  output="$(sed "${sedargs}" <(printf %s "${1}") \
+    | sort \
     | tail -n 1)"
   echo "$output"
 }
 
 main() {
-
   if [ ! -e template ]; then
     echo "No template in current directory." 1>&2 && exit 1
   fi
@@ -30,18 +27,19 @@ main() {
 
   readonly SGKEY="$(curl -LfsS ${SGKEYURL})"
 
-  GCCFILE="$(curl -LfsS ${GCCLIBSURL})"
-  GCCFILE="$(find_pack "${GCCFILE}")" # TODO test this syntax
-  readonly GCCFILE
-
-  ZLIBFILE="$(curl -LfsS ${ZLIBURL})"
-  ZLIBFILE="$(find_pack "${ZLIBFILE}")" # TODO test this syntax
-  readonly ZLIBFILE
-
+  GCCFILE="$(curl -LfsS ${GCCLIBSURL})" \
+    && GCCFILE="$(find_pack "${GCCFILE}")" \
+    && readonly GCCFILE \
+    || exit 1
+  ZLIBFILE="$(curl -LfsS ${ZLIBURL})" \
+    && ZLIBFILE="$(find_pack "${ZLIBFILE}")" \
+    && readonly ZLIBFILE \
+    || exit 1
   GLIBCVER="$(curl -sS ${GLIBCURL}/latest)" \
     && GLIBCVER="${GLIBCVER#*tag/}" \
     && GLIBCVER="${GLIBCVER%\"*}" \
-    && readonly GLIBCVER
+    && readonly GLIBCVER \
+    || exit 1
 
   readonly GCCTAR="${GCCFILE%????}"
   readonly GCCFULLURL="${GCCLIBSURL}/${GCCFILE}"
@@ -55,21 +53,24 @@ main() {
   readonly GCCLIBSVER="${GCCFILE%\.pkg*}"
   readonly ZLIBVER="${ZLIBFILE%\.pkg*}"
 
-  mkdir /working
-  mv template /working/template
-  cd /working || exit
-  curl -LfsS "${GCCFULLURL}" "${ZLIBFULLURL}" -O -O
-  curl -LfsS "${GLIBCFULLURL}" "${GLIBCBINURL}" "${GLIBCI18NURL}" -O -O -O
+  if [ ! -d working ]; then
+    mkdir /working
+  fi
+  cp template /working/template
+  cd /working || exit 1
+
+  curl -Lf "${GCCFULLURL}" "${ZLIBFULLURL}" -O -O \
+    || exit 1
+  curl -Lf "${GLIBCFULLURL}" "${GLIBCBINURL}" "${GLIBCI18NURL}" -O -O -O \
+    || exit 1
 
   declare -a sums
-  declare -a filelist
-  readarray filelist < <(ls -A)
-  readonly filelist
-  for file in "${filelist[@]}"; do
-    sums+=("$(sha256sum "${filelist[$file]}" | head -c 64)")
+  for file in *; do
+    sums+=("$(sha256sum "${file}" | head -c 64)")
   done
   readonly sums
 
+  # indices are hardcoded to assume only these five (5) files in this order
   readonly GCCSUM="${sums[0]}"
   readonly GLIBCSUM="${sums[1]}"
   readonly GLIBCBINSUM="${sums[2]}"
@@ -99,8 +100,8 @@ main() {
     s,GLIBCVER,$GLIBCVER,g" template
     # GCCLIBSVER unused in template
     # ZLIBVER unused in template
-
-  cat template
+ cat template
 }
 
 main
+exit 0
