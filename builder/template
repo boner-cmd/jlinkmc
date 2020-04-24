@@ -1,5 +1,4 @@
-# please don't modify this file directly, it was generated using scripts
-# in an Alpine environment, which can be found in the builder directory
+# please don't modify this file directly; it was generated using scripts
 # this specific Dockerfile was generated DATE_
 
 # Alpine base
