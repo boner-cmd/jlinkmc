@@ -1,5 +1,8 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Fri, 24 Apr 2020 15:44:18 +0000
+# this specific Dockerfile was generated Fri, 24 Apr 2020 19:16:19 +0000
+
+# Determine which version of OpenJDK to use later
+ARG JDK_VERSION=14
 
 # Alpine base
 FROM alpine AS prepack
@@ -26,7 +29,7 @@ RUN apk update \
   && echo "${SASHA_GERRAND_RSA_SUM} */etc/apk/keys/sgerrand.rsa.pub" | sha256sum -c -
 
 # AdoptOpenJDK image on an Alpine base
-FROM adoptopenjdk/OPENJDKVER:alpine AS jlink
+FROM adoptopenjdk/openjdk${JDK_VERSION}:alpine AS jlink
 
 COPY --from=prepack /tmp/binutilscpy /tmp/binutilscpy
 
@@ -67,7 +70,7 @@ ENV GLIBC_I18N_SUM="af2841582de5d1523bf31f488039a8cd56a156b8a521fa271aa55a952e52
 ENV ZLIB_FULL_URL="https://archive.archlinux.org/packages/z/zlib/zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
 ENV ZLIB_VER="zlib-1%3A1.2.11-4-x86_64"
 ENV ZLIB_FILENAME="zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
-ENV ZLIB_FILE_SUM="61e8855b893b82dffdeedf4872475ba794121cb64c9dfae1773a78355904083f"
+ENV ZLIB_FILE_SUM="e7353cbac10b87f923d62dc34fdca98abab364668a828978d40a81e47deabd90"
 
 RUN curl -LfsS "${GCC_FULL_URL}" -O \
 	&& curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
