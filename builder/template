@@ -32,11 +32,11 @@ COPY --from=prepack /tmp/binutilscpy /tmp/binutilscpy
 
 RUN apk add /tmp/binutilscpy/*
 
-RUN ["/opt/java/openjdk/bin/jlink", "--compress=2", "--bind-services", "--strip-debug", \
-	"--module-path", "/opt/java/openjdk/jmods", "--add-modules", \
-	"java.base,java.desktop,java.instrument,java.scripting,java.sql,java.instrument,java.compiler,java.logging,java.management,java.naming,java.rmi,java.xml,jdk.sctp,jdk.unsupported", \
-	"--no-header-files", "--no-man-pages", \
-	"--output", "/jlinked"]
+RUN ["/opt/java/openjdk/bin/jlink", "--compress=2", "--bind-services", \
+  "--strip-debug", "--module-path", "/opt/java/openjdk/jmods", \
+  "--add-modules", \
+	"java.base,java.compiler,java.desktop,java.logging,java.management,java.naming,java.rmi,java.scripting,java.sql,java.xml,jdk.sctp,jdk.unsupported,java.instrument", \
+  "--no-header-files", "--no-man-pages", "--output", "/jlinked"]
 
 FROM prepack
 
