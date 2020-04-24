@@ -56,6 +56,7 @@ main() {
   fi
   cp template /working/template
   cd /working || exit 1
+
   # file downloads are slow; output not suppressed to show script did not hang
   curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
     || exit 1
@@ -78,7 +79,7 @@ main() {
   readonly GLIBC_I18N_SUM="${sums[3]}"
   readonly SASHA_GERRAND_RSA_SUM="${sums[4]}"
   readonly ZLIB_FILE_SUM="${sums[5]}"
-  # TODO find which one of these sed commands is bricking the whole thing
+
   sed -i "s,SASHA_GERRAND_RSA_SUM_,${SASHA_GERRAND_RSA_SUM},; \
     s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
     s,GCC_FULL_URL_,${GCC_FULL_URL},; \
@@ -101,6 +102,12 @@ main() {
     s,ZLIB_FILENAME_,${ZLIB_FILENAME},; \
     s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template \
   || exit 1
+
+  # stamp the generation date last
+  readonly READY_DATE="$(date -R)"
+  sed -i "s,DATE_,${READY_DATE}," template \
+  || exit 1
+
   cat template
 }
 
