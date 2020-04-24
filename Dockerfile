@@ -1,3 +1,6 @@
+# please don't modify this file directly; it was generated using scripts
+# this specific Dockerfile was generated Fri, 24 Apr 2020 12:51:55 +0000
+
 # Alpine base
 FROM alpine AS prepack
 
@@ -64,7 +67,7 @@ ENV GLIBC_I18N_SUM="af2841582de5d1523bf31f488039a8cd56a156b8a521fa271aa55a952e52
 ENV ZLIB_FULL_URL="https://archive.archlinux.org/packages/z/zlib/zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
 ENV ZLIB_VER="zlib-1%3A1.2.11-4-x86_64"
 ENV ZLIB_FILENAME="zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
-ENV ZLIB_FILE_SUM="c813cedc47d999775708b9f29199baa429a783965f943e444a56c08823936f35"
+ENV ZLIB_FILE_SUM="810270cdc5ef03fa02340b7c5d16c48a0f86b3d165eabed083999c308b63c97c"
 
 RUN curl -LfsS "${GCC_FULL_URL}" -O \
 	&& curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
