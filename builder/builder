@@ -52,10 +52,10 @@ main() {
   readonly ZLIB_VER="${ZLIB_FILENAME%\.pkg*}"
 
   if [ ! -d working ]; then
-    mkdir /working
+    mkdir working
   fi
-  cp template /working/template
-  cd /working || exit 1
+
+  pushd working || exit 1
 
   # file downloads are slow; output not suppressed to show script did not hang
   curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
@@ -71,8 +71,6 @@ main() {
   done
   readonly sums
 
-  #TODO confirmed that correct sums are input into the sums array
-
   # indices are hardcoded to assume only these six (6) files in this order:
   # GCC, GLIBC, GLIBC BIN, GLIBC I18N, Sasha Gerrand's RSA, ZLIB
   readonly GCC_FILE_SUM="${sums[0]}"
@@ -82,9 +80,9 @@ main() {
   readonly SASHA_GERRAND_RSA_SUM="${sums[4]}"
   readonly ZLIB_FILE_SUM="${sums[5]}"
 
-  for c in "${sums[@]}"; do
-    echo "$c"
-  done
+  popd || exit 1
+  cp ./template ./working/template
+  cd working || exit 1
 
   sed -i "s,SASHA_GERRAND_RSA_SUM_,${SASHA_GERRAND_RSA_SUM},; \
     s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
