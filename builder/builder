@@ -65,8 +65,8 @@ main() {
     || exit 1
 
   declare -a sums
-  for file in ./*; do
-    sums+=("$(sha256sum "${file}" | head -c 64)")
+  for file in *; do
+    sums+=("$(sha256sum "./${file}" | head -c 64)")
   done
   readonly sums
 
@@ -100,7 +100,7 @@ main() {
     s,ZLIB_FILENAME_,${ZLIB_FILENAME},; \
     s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template \
   || exit 1
-  
+
   cat template
 }
 
