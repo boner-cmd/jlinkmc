@@ -60,19 +60,18 @@ main() {
   # file downloads are slow; output not suppressed to show script did not hang
   curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
     || exit 1
-  curl -Lf "${GCC_FULL_URL}" -O \
+  curl -Lf "${GCC_FULL_URL}" "${ZLIB_FULL_URL}" -O -O \
     || exit 1
   curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
-    || exit 1
-  curl -Lf "${ZLIB_FULL_URL}" -O \
     || exit 1
 
   declare -a sums
   for file in *; do
     sums+=("$(sha256sum "./${file}" | head -c 64)")
-    sha256sum "./${file}" | head -c 64
   done
   readonly sums
+
+  #TODO confirmed that correct sums are input into the sums array
 
   # indices are hardcoded to assume only these six (6) files in this order:
   # GCC, GLIBC, GLIBC BIN, GLIBC I18N, Sasha Gerrand's RSA, ZLIB
@@ -82,6 +81,10 @@ main() {
   readonly GLIBC_I18N_SUM="${sums[3]}"
   readonly SASHA_GERRAND_RSA_SUM="${sums[4]}"
   readonly ZLIB_FILE_SUM="${sums[5]}"
+
+  for c in "${sums[@]}"; do
+    echo "$c"
+  done
 
   sed -i "s,SASHA_GERRAND_RSA_SUM_,${SASHA_GERRAND_RSA_SUM},; \
     s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
