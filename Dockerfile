@@ -1,5 +1,5 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Fri, 24 Apr 2020 12:51:55 +0000
+# this specific Dockerfile was generated Fri, 24 Apr 2020 15:44:18 +0000
 
 # Alpine base
 FROM alpine AS prepack
@@ -32,11 +32,11 @@ COPY --from=prepack /tmp/binutilscpy /tmp/binutilscpy
 
 RUN apk add /tmp/binutilscpy/*
 
-RUN ["/opt/java/openjdk/bin/jlink", "--compress=2", "--bind-services", "--strip-debug", \
-	"--module-path", "/opt/java/openjdk/jmods", "--add-modules", \
-	"java.base,java.desktop,java.instrument,java.scripting,java.sql,java.instrument,java.compiler,java.logging,java.management,java.naming,java.rmi,java.xml,jdk.sctp,jdk.unsupported", \
-	"--no-header-files", "--no-man-pages", \
-	"--output", "/jlinked"]
+RUN ["/opt/java/openjdk/bin/jlink", "--compress=2", "--bind-services", \
+  "--strip-debug", "--module-path", "/opt/java/openjdk/jmods", \
+  "--add-modules", \
+	"java.base,java.compiler,java.desktop,java.logging,java.management,java.naming,java.rmi,java.scripting,java.sql,java.xml,jdk.sctp,jdk.unsupported,java.instrument", \
+  "--no-header-files", "--no-man-pages", "--output", "/jlinked"]
 
 FROM prepack
 
@@ -67,7 +67,7 @@ ENV GLIBC_I18N_SUM="af2841582de5d1523bf31f488039a8cd56a156b8a521fa271aa55a952e52
 ENV ZLIB_FULL_URL="https://archive.archlinux.org/packages/z/zlib/zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
 ENV ZLIB_VER="zlib-1%3A1.2.11-4-x86_64"
 ENV ZLIB_FILENAME="zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
-ENV ZLIB_FILE_SUM="810270cdc5ef03fa02340b7c5d16c48a0f86b3d165eabed083999c308b63c97c"
+ENV ZLIB_FILE_SUM="61e8855b893b82dffdeedf4872475ba794121cb64c9dfae1773a78355904083f"
 
 RUN curl -LfsS "${GCC_FULL_URL}" -O \
 	&& curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
