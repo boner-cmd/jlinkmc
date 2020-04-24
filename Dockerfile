@@ -93,7 +93,7 @@ RUN curl -LfsS "${GCC_FULL_URL}" -O \
 						glibc-i18n \
 						zstd \
     && rm -r /tmp/gcc \
-			/tmp/depends
+			/tmp/depends \
 			/tmp/libz \
 			/tmp/binutilscpy \
 			/var/cache/apk/*
