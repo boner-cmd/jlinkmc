@@ -70,6 +70,7 @@ main() {
   declare -a sums
   for file in *; do
     sums+=("$(sha256sum "./${file}" | head -c 64)")
+    sha256sum "./${file}" | head -c 64
   done
   readonly sums
 
