@@ -25,8 +25,6 @@ main() {
   readonly ZLIB_BASE_URL="https://archive.archlinux.org/packages/z/zlib"
   readonly SASHA_GERRAND_KEY_URL="https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub"
 
-  readonly SASHA_GERRAND_KEY="$(curl -LfsS ${SASHA_GERRAND_KEY_URL})"
-
   GCC_FILENAME="$(curl -LfsS ${GCC_BASE_URL})" \
     && GCC_FILENAME="$(find_pack "${GCC_FILENAME}")" \
     && readonly GCC_FILENAME \
@@ -59,6 +57,8 @@ main() {
   cp template /working/template
   cd /working || exit 1
   # file downloads are slow; output not suppressed to show script did not hang
+  curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
+    || exit 1
   curl -Lf "${GCC_FULL_URL}" "${ZLIB_FULL_URL}" -O -O \
     || exit 1
   curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
@@ -70,21 +70,22 @@ main() {
   done
   readonly sums
 
-  # indices are hardcoded to assume only these five (5) files in this order
+  # indices are hardcoded to assume only these six (6) files in this order:
+  # GCC, GLIBC, GLIBC BIN, GLIBC I18N, Sasha Gerrand's RSA, ZLIB
   readonly GCC_FILE_SUM="${sums[0]}"
   readonly GLIBC_FILE_SUM="${sums[1]}"
   readonly GLIBC_BIN_SUM="${sums[2]}"
   readonly GLIBC_I18N_SUM="${sums[3]}"
-  readonly ZLIB_FILE_SUM="${sums[4]}"
-
+  readonly SASHA_GERRAND_RSA_SUM="${sums[4]}"
+  readonly ZLIB_FILE_SUM="${sums[5]}"
   # TODO find which one of these sed commands is bricking the whole thing
-  sed -i "s,SASHA_GERRAND_KEY__,${SASHA_GERRAND_KEY},;
+  sed -i "s,SASHA_GERRAND_RSA_SUM_,${SASHA_GERRAND_RSA_SUM},; \
     s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
     s,GCC_FULL_URL_,${GCC_FULL_URL},; \
     s,GCC_LIBS_VER_,${GCC_LIBS_VER},; \
     s,GCC_FILENAME_,${GCC_FILENAME},; \
     s,GCC_FILE_SUM_,${GCC_FILE_SUM},; \
-    s,GCC_TAR_NAME_,${GCC_TAR_NAME},; \
+    s,GCC_TAR_NAME_,${GCC_TAR_NAME},;
     s,GLIBC_FULL_URL_,${GLIBC_FULL_URL},; \
     s,GLIBC_VER_,${GLIBC_VER},; \
     s,GLIBC_FILENAME_,${GLIBC_FILENAME},; \
@@ -100,7 +101,6 @@ main() {
     s,ZLIB_FILENAME_,${ZLIB_FILENAME},; \
     s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template \
   || exit 1
-
   cat template
 }
 
