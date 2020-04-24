@@ -105,7 +105,7 @@ main() {
 
   # stamp the generation date last
   readonly READY_DATE="$(date -R)"
-  sed -i "s,DATE_,${READY_DATE}," template \
+  sed -i "s/DATE_/${READY_DATE}/" template \
   || exit 1
 
   cat template
