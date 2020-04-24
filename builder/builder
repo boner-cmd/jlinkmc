@@ -60,9 +60,11 @@ main() {
   # file downloads are slow; output not suppressed to show script did not hang
   curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
     || exit 1
-  curl -Lf "${GCC_FULL_URL}" "${ZLIB_FULL_URL}" -O -O \
+  curl -Lf "${GCC_FULL_URL}" -O \
     || exit 1
   curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
+    || exit 1
+  curl -Lf "${ZLIB_FULL_URL}" -O \
     || exit 1
 
   declare -a sums
