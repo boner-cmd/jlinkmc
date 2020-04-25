@@ -11,7 +11,7 @@ docker stop buildercon >nul
 docker rm buildercon >nul
 @ECHO ON
 popd
-cp \builder\output\Dockerfile .
+copy .\builder\output\Dockerfile
 @ECHO OFF
 setlocal
 set /p jdkvers_=Use which JDK version? :
