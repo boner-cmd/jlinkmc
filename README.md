@@ -40,4 +40,4 @@ This image was jlinked using the following Java modules, which, to the best of m
 
 # Source
 
-I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). The build process for the current tag (jdk14) is now nearly entirely automated, but development on other branches is not. Issues are enabled, so if something doesn't work I look forward to the challenge.
+The build process for the current tag (jdk14) is now nearly entirely automated, but development on other branches is not. Issues are enabled, so if something doesn't work I look forward to the challenge.
