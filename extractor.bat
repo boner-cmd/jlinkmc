@@ -12,6 +12,7 @@ docker rm buildercon >nul
 @ECHO ON
 popd
 copy .\builder\output\Dockerfile
+If %errorlevel% NEQ 0 goto:eof
 @ECHO OFF
 setlocal
 set jdk_version_=14
