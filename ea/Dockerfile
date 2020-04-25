@@ -10,7 +10,7 @@ ENV JDK_FILENAME="openjdk-15-ea+10_linux-x64-musl_bin.tar.gz"
 
 RUN apk update \
   && apk add --no-cache curl binutils libgcc libstdc++ \
-  && curl -LfsS https://download.java.net/java/early_access/alpine/10/binaries/${JDK_FILENAME} -O \
+  && curl -Lf https://download.java.net/java/early_access/alpine/10/binaries/${JDK_FILENAME} -O \
   && tar -xzf ${JDK_FILENAME} \
   && mv jdk-15/* . \
   && rm -r jdk-15 \
