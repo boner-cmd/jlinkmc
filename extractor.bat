@@ -1,6 +1,6 @@
 @ECHO OFF
-pushd "%~dp0"
-pushd \builder
+pushd %~dp0
+pushd .\builder
 If %errorlevel% NEQ 0 goto:eof
 @ECHO ON
 docker build -t bone4cmdr/jlinkmc:builder .
