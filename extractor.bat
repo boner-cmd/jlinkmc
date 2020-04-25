@@ -14,7 +14,8 @@ popd
 copy .\builder\output\Dockerfile
 @ECHO OFF
 setlocal
-set /p jdkvers_=Use which JDK version? :
+set jdk_version_=14
+set /p jdk_version_=Use which JDK version? :
 @ECHO ON
-docker build --build-arg JDK_VERSION=%jdkvers_% -t bone4cmdr/jlinkmc:%jdkvers_% .
+docker build --build-arg JDK_VERSION=%jdk_version_% -t bone4cmdr/jlinkmc:%jdk_version_% .
 PAUSE
