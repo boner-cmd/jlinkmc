@@ -1,11 +1,11 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Fri, 24 Apr 2020 20:24:04 +0000
+# this specific Dockerfile was generated Sat, 25 Apr 2020 19:19:57 +0000
 
 # Determine which version of OpenJDK to use later
 ARG JDK_VERSION=14
 
 # Alpine base
-FROM alpine AS prepack
+FROM alpine:latest AS prepack
 
 # download binutils and deps so they won't need to be downloaded again later
 # also download zstd since apk update occurs here
