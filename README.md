@@ -1,19 +1,23 @@
 # jlinkmc
 JLinked JDK suitable for use with PaperMC Minecraft
 
-# Size
+# Compressed Size Comparison
 
-(As of 20200424)
+(As of 20200425)
 
-+ Compressed size of ethco/jlinkmc:jdk14 - 75.56 MB
++ ethco/jlinkmc:jdk15ea - 55.14 MB
 
-+ Compressed size of AdoptOpenJDK/openjdk14:alpine - 210.87 MB
++ ethco/jlinkmc:jdk14 - 75.56 MB
+
++ AdoptOpenJDK/openjdk14:alpine - 210.87 MB
 
 # Concept
 
-Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft server on an Alpine base can substantially reduce the total size of your image. The code used was based on posts from Matthew Gilliard's blog ([like this one](https://blog.gilliard.lol/2018/11/05/alpine-jdk11-images.html)), themselves based on work on AdoptOpenJDK by Dinakar Guniguntala ([dinogun](https://github.com/dinogun)) and others. As described in the blog post, this is NOT an Alpine-native (Portola) Java build, but a build of Java using [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine. 
+Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft server on an Alpine base can substantially reduce the total size of your image. The code used was based on posts from Matthew Gilliard's blog ([like this one](https://blog.gilliard.lol/2018/11/05/alpine-jdk11-images.html)), themselves based on work on AdoptOpenJDK by Dinakar Guniguntala ([dinogun](https://github.com/dinogun)) and others.
 
-The transition to Portola will hopefully occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will hopefully result in further size reduction.
+The`jdk14` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it uses [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine.
+
+The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. Progress during early access should be considered perpetually unstable, and can be found in the `jdk15ea` tag.
 
 # Contents
 
