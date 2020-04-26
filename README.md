@@ -1,6 +1,3 @@
-# jlinkmc
-JLinked JDK suitable for use with PaperMC Minecraft
-
 # Compressed Size Comparison
 
 (As of 20200425)
