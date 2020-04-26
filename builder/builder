@@ -17,7 +17,8 @@ find_pack() {
 
 main() {
   if [ ! -e template ]; then
-    echo "No template in current directory." 1>&2 && exit 1
+    echo "No template in current directory." 1>&2 \
+      && exit 1
   fi
 
   readonly GCC_BASE_URL="https://archive.archlinux.org/packages/g/gcc-libs"
