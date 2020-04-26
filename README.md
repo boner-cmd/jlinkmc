@@ -39,9 +39,9 @@ This image was jlinked using the following Java modules, which, to the best of m
 
 # Goals
 
-+ Test using the early access Alpine version of JDK15
++ Run more tests using the early access Alpine version of JDK15
 + Add support for PGP-based signature verification, [despite its shortcomings](https://arstechnica.com/information-technology/2016/12/op-ed-im-giving-up-on-pgp/)
 
 # Source
 
-The build process for the current tag (jdk14) is now nearly entirely automated, but development on other branches is not. Issues are enabled, so if something doesn't work I look forward to the challenge.
+I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). The build process for the current tag (jdk14) is now nearly entirely automated, but development on the jdk15 early access branch is not. Issues are enabled, so if something doesn't work, then I look forward to the challenge of correcting it.
