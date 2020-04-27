@@ -14,7 +14,7 @@ Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft 
 
 The`jdk14` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it uses [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine.
 
-The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. Progress during early access should be considered perpetually unstable, and can be found in the `jdk15ea` tag.
+The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. Progress during early access should be considered perpetually unstable and can be found in the `jdk15ea` tag.
 
 # Contents
 
