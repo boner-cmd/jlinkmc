@@ -10,7 +10,7 @@
 
 # Concept
 
-Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft server on an Alpine base can substantially reduce the total size of your image. The code used was based on posts from Matthew Gilliard's blog ([like this one](https://blog.gilliard.lol/2018/11/05/alpine-jdk11-images.html)), themselves based on work on AdoptOpenJDK by Dinakar Guniguntala ([dinogun](https://github.com/dinogun)) and others.
+Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft server on an Alpine base can substantially reduce the total size of your image. The code used was based on posts from [Matthew Gilliard](https://github.com/mjg123)'s blog ([like this one](https://blog.gilliard.lol/2018/11/05/alpine-jdk11-images.html)), themselves based on work on AdoptOpenJDK by Dinakar Guniguntala ([dinogun](https://github.com/dinogun)) and others.
 
 The`jdk14` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it uses [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine.
 
