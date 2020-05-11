@@ -10,55 +10,43 @@ on:
   # Run tests for any PRs.
   pull_request:
 
-env:
-  # TODO: Change variable to your image's name.
-  IMAGE_NAME: image
-
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare Dockerfile using shell script and template
+        run: |
+          docker build -t bone4cmdr/jlinkmc:builder ./builder
+          docker run --name buildercon bone4cmdr/jlinkmc:buildercon
+      - name: Retrieve prepared Dockerfile
+        run: docker cp buildercon:/working/template ./builder/output/Dockerfile
+
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
+    needs: prepare
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        jdk: [14, 13, 9, 15ea]
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run tests
+      - name: Test building using selected JDKs
+        env: javadk: ${{ matrix.jdk }}
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
 
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
   push:
     # Ensure test job passes before pushing image.
     needs: test
-
+    name: Push Docker image to Docker hub
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
-
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
-        run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
-          
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
-          docker tag image $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+      uses: actions/checkout@v2
+      # TODO: research this action
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ethco/jlinkmc
