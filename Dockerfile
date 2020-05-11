@@ -82,23 +82,23 @@ RUN curl -LfsS "${GCC_FULL_URL}" -O \
 	&& echo "${ZLIB_FILE_SUM}  ${ZLIB_FILENAME}" | sha256sum -c - \
 	&& apk del --purge curl \
 	&& apk add --no-cache glibc-${GLIBC_VER}.apk \
-					glibc-bin-${GLIBC_VER}.apk \
-					glibc-i18n-${GLIBC_VER}.apk \
-    && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
-    && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
+		glibc-bin-${GLIBC_VER}.apk \
+		glibc-i18n-${GLIBC_VER}.apk \
+  && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
+  && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
 	&& unzstd "${GCC_FILENAME}" -o "${GCC_TAR_NAME}" \
 	&& tar -xf "${GCC_TAR_NAME}" -C /tmp/gcc \
-    && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
-    && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
-    && tar -xf ${ZLIB_FILENAME} -C /tmp/libz \
-    && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
+  && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
+  && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
+  && tar -xf ${ZLIB_FILENAME} -C /tmp/libz \
+  && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
 	&& apk del --purge binutils \
-						glibc-i18n \
-						zstd \
-    && rm -r /tmp/gcc \
-			/tmp/depends \
-			/tmp/libz \
-			/tmp/binutilscpy \
-			/var/cache/apk/*
+		glibc-i18n \
+		zstd \
+  && rm -r /tmp/gcc \
+		/tmp/depends \
+		/tmp/libz \
+		/tmp/binutilscpy \
+		/var/cache/apk/*
 
 CMD ["java", "-version"]
