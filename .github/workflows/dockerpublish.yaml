@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build the builder
         run: docker build -t bone4cmdr/jlinkmc:builder ./sandbox
+      - name: Run the builder
         run: docker run --name buildercon bone4cmdr/jlinkmc:buildercon
       - name: Grab the finished template from the builder
         run: docker cp buildercon:/working/template ./Dockerfile
