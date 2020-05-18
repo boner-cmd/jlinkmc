@@ -1,3 +1,5 @@
+![Autobuild Status](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master)
+
 # Compressed Size Comparison
 
 (As of 20200425)
