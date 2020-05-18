@@ -1,4 +1,4 @@
-![Autobuild](https://github.com/boner-cmd/JLinkMC/workflows/Autobuild/badge.svg?branch=master)
+![Docker](https://github.com/boner-cmd/JLinkMC/workflows/docker/badge.svg?branch=master)
 
 # Compressed Size Comparison of linux/amd64 images
 

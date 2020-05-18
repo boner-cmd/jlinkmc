@@ -1,4 +1,4 @@
-name: Autobuild
+name: Docker
 on:
   schedule:
     - cron: '11 23 * * *'
