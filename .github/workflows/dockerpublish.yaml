@@ -13,9 +13,12 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Get our files
+        uses: actions/checkout@v2
+      - name: Build the builder
         run: docker build -t bone4cmdr/jlinkmc:builder ./sandbox
         run: docker run --name buildercon bone4cmdr/jlinkmc:buildercon
+      - name: Grab the finished template from the builder
         run: docker cp buildercon:/working/template ./Dockerfile
 
   # Try to build different containers using script-built template container.
@@ -26,7 +29,7 @@ jobs:
       javadk: 14
     steps:
       - uses: actions/checkout@v2
-        run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      - run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testoldstable:
     needs: prepare
     runs-on: ubuntu-latest
@@ -34,7 +37,7 @@ jobs:
       javadk: 13
     steps:
       - uses: actions/checkout@v2
-        run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      - run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testea:
     needs: prepare
     runs-on: ubuntu-latest
@@ -42,7 +45,7 @@ jobs:
       javadk: 15
     steps:
       - uses: actions/checkout@v2
-        run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
+      - run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
   pushstable:
     # Ensure test job passes before pushing image.
     needs: teststable
