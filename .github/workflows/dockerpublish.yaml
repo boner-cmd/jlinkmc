@@ -1,10 +1,7 @@
 name: Docker
 on:
-  push:
-    branches:
-      - master
   schedule:
-    - cron: '00 12 * * 6'
+    - cron: '11 23 * * *'
 
   # Run tests for any PRs.
   pull_request:
