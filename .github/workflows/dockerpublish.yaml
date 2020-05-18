@@ -17,14 +17,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Prepare Dockerfile using shell script and template
         run: |
-          docker build -t bone4cmdr/jlinkmc:builder ./builder
+          docker build -t bone4cmdr/jlinkmc:builder ./sandbox
           docker run --name buildercon bone4cmdr/jlinkmc:buildercon
       - name: Retrieve prepared Dockerfile
-        run: docker cp buildercon:/working/template ./builder/output/Dockerfile
+        run: docker cp buildercon:/working/template ./Dockerfile
 
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
+  # Try to build different containers using script-built template container.
+  teststable:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
@@ -32,25 +31,62 @@ jobs:
       - name: Test building using stable JDK
         env: javadk: 14
         run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+  testoldstable:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Test building using old stable JDK
         env: javadk: 13
         run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+  testea:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Test building using early access JDK
-        env: javadk: 15ea
+        env: javadk: 15
         run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
-  push:
+          docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
+  pushstable:
     # Ensure test job passes before pushing image.
-    needs: test
+    needs: teststable
     name: Push Docker image to Docker hub
     runs-on: ubuntu-latest
     steps:
       uses: actions/checkout@v2
-      # TODO: research this action
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ethco/jlinkmc
+        tags: stable,jdk14,latest
+        build_args: JDK_VERSION=14
+  pusholdstable:
+    needs: testoldstable
+    name: Push Docker image to Docker hub
+    runs-on: ubuntu-latest
+    steps:
+      uses: actions/checkout@v2
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ethco/jlinkmc
+        tags: oldstable,jdk13
+        build_args: JDK_VERSION=13
+  pushea:
+    needs: testea
+    name: Push Docker image to Docker hub
+    runs-on: ubuntu-latest
+    steps:
+      uses: actions/checkout@v2
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ethco/jlinkmc
+        tags: ea,jdk15
+        dockerfile: /ea
