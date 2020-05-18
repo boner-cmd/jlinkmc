@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Attempt to build the early access image
-        run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
+        run: docker build -t ethco/jlinkmc:jdk$javadk ./ea
   pushstable:
     # Ensure test job passes before pushing image.
     needs: teststable
