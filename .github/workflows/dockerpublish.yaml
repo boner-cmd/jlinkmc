@@ -93,4 +93,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
           tags: ea,jdk15
-          dockerfile: ./ea
+          dockerfile: ./ea/Dockerfile
