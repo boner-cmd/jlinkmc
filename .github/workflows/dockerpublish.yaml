@@ -13,14 +13,17 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - name: Get our files
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Build the builder
-        run: docker build -t bone4cmdr/jlinkmc:builder ./sandbox
-      - name: Run the builder
-        run: docker run --name buildercon bone4cmdr/jlinkmc:buildercon
-      - name: Grab the finished template from the builder
-        run: docker cp buildercon:/working/template ./Dockerfile
+        run: |
+          docker build -t bone4cmdr/jlinkmc:builder ./sandbox
+          docker run --name buildercon bone4cmdr/jlinkmc:buildercon
+          docker cp buildercon:/working/template ./Dockerfile
+      - name: Preserve the updated template, in case needed
+        uses: actions/upload-artifact@v1
+        with:
+          name: new-template
+          path: Dockerfile
 
   # Try to build different containers using script-built template container.
   teststable:
@@ -30,7 +33,9 @@ jobs:
       javadk: 14
     steps:
       - uses: actions/checkout@v2
-      - run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      - name: Attempt to build the stable image
+        run: |
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testoldstable:
     needs: prepare
     runs-on: ubuntu-latest
@@ -38,19 +43,21 @@ jobs:
       javadk: 13
     steps:
       - uses: actions/checkout@v2
-      - run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      - name: Attempt to build the old stable image
+        run: |
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk ./new-template
   testea:
-    needs: prepare
     runs-on: ubuntu-latest
     env:
       javadk: 15
     steps:
       - uses: actions/checkout@v2
-      - run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
+      - name: Attempt to build the early access image
+        run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
   pushstable:
     # Ensure test job passes before pushing image.
     needs: teststable
-    name: Push Docker image to Docker hub
+    name: Push and tag stable Docker image to Docker hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -63,7 +70,7 @@ jobs:
           build_args: JDK_VERSION=14
   pusholdstable:
     needs: testoldstable
-    name: Push Docker image to Docker hub
+    name: Push and tag old stable Docker image to Docker hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -76,7 +83,7 @@ jobs:
           build_args: JDK_VERSION=13
   pushea:
     needs: testea
-    name: Push Docker image to Docker hub
+    name: Push and tag early access Docker image to Docker hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
