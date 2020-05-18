@@ -1,15 +1,5 @@
 ![Docker](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master)
 
-# Compressed Size Comparison of linux/amd64 images
-
-(As of 20200518)
-
-+ ethco/jlinkmc:jdk14 - 74.06 MB
-
-+ AdoptOpenJDK:latest - 240.38 MB
-
-+ AdoptOpenJDK/openjdk14:alpine - 210.88 MB
-
 # Tag Equivalence
 
 + `latest` `stable` `jdk14`
@@ -26,9 +16,17 @@ The `latest` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it
 
 The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. The build using the early access JDK can be found in the `ea` tag.
 
-For comparison to other compressed sizes:
+# Compressed Size Comparison of linux/amd64 images
+
+(As of 20200518)
 
 + ethco/jlinkmc:jdk15 - 55.15 MB
+
++ ethco/jlinkmc:jdk14 - 74.06 MB
+
++ AdoptOpenJDK/openjdk14:alpine - 210.88 MB
+
++ AdoptOpenJDK:latest - 240.38 MB
 
 # Contents
 
@@ -47,6 +45,8 @@ This image was jlinked using the following Java modules, which, to the best of m
 + jdk.sctp
 + jdk.unsupported
 + java.instrument
+
+Minecraft itself requires all of the above except java.instrument
 
 # Goals
 
