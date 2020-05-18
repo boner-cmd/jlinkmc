@@ -29,7 +29,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test building using stable JDK
-        env: javadk: 14
+        env:
+          javadk: 14
         run: |
           docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testoldstable:
@@ -38,7 +39,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test building using old stable JDK
-        env: javadk: 13
+        env:
+          javadk: 13
         run: |
           docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testea:
@@ -47,7 +49,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test building using early access JDK
-        env: javadk: 15
+        env:
+          javadk: 15
         run: |
           docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
   pushstable:
