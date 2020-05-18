@@ -14,45 +14,37 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Prepare Dockerfile using shell script and template
-        run: |
-          docker build -t bone4cmdr/jlinkmc:builder ./sandbox
-          docker run --name buildercon bone4cmdr/jlinkmc:buildercon
-      - name: Retrieve prepared Dockerfile
-        run: docker cp buildercon:/working/template ./Dockerfile
+      uses: actions/checkout@v2
+      run: |
+        docker build -t bone4cmdr/jlinkmc:builder ./sandbox
+        docker run --name buildercon bone4cmdr/jlinkmc:buildercon
+      run: docker cp buildercon:/working/template ./Dockerfile
 
   # Try to build different containers using script-built template container.
   teststable:
     needs: prepare
     runs-on: ubuntu-latest
+    env:
+      javadk: 14
     steps:
-      - uses: actions/checkout@v2
-      - name: Test building using stable JDK
-        env:
-          javadk: 14
-        run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      uses: actions/checkout@v2
+      run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testoldstable:
     needs: prepare
     runs-on: ubuntu-latest
+    env:
+      javadk: 13
     steps:
-      - uses: actions/checkout@v2
-      - name: Test building using old stable JDK
-        env:
-          javadk: 13
-        run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
+      uses: actions/checkout@v2
+      run: docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
   testea:
     needs: prepare
     runs-on: ubuntu-latest
+    env:
+      javadk: 15
     steps:
-      - uses: actions/checkout@v2
-      - name: Test building using early access JDK
-        env:
-          javadk: 15
-        run: |
-          docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
+      uses: actions/checkout@v2
+      run: docker build -t ethco/jlinkmc:jdk$javadk /ea/Dockerfile
   pushstable:
     # Ensure test job passes before pushing image.
     needs: teststable
