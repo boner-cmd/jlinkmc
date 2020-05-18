@@ -27,16 +27,20 @@ jobs:
   test:
     needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        jdk: [14, 13, 9, 15ea]
     steps:
       - uses: actions/checkout@v2
-      - name: Test building using selected JDKs
-        env: javadk: ${{ matrix.jdk }}
+      - name: Test building using stable JDK
+        env: javadk: 14
         run: |
           docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
-
+      - name: Test building using old stable JDK
+        env: javadk: 13
+        run: |
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
+      - name: Test building using early access JDK
+        env: javadk: 15ea
+        run: |
+          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk
   push:
     # Ensure test job passes before pushing image.
     needs: test
