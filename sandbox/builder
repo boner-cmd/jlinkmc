@@ -1,5 +1,5 @@
 #!/bin/bash
-# needs bash for pushd and popd
+# needs bash for pushd, popd, and array functionality when getting sums
 
 find_pack() {
   # using sed because builtins would require iterating
