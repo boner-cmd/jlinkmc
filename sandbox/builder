@@ -1,5 +1,5 @@
 #!/bin/bash
-# bash required to pass awk args in an array
+# needs bash for pushd and popd
 
 find_pack() {
   # using sed because builtins would require iterating
@@ -11,7 +11,6 @@ find_pack() {
   readonly sedargs
   output="$(sed "${sedargs}" <(printf %s "${1}") \
     | sort \
-    | tail -n 1)"
   printf "%s\n" "$output"
 }
 
