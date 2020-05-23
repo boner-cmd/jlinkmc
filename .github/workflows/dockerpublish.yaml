@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - testing
   pull_request:
 
 jobs:
