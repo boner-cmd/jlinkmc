@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-#      - testing
+      - testing
   pull_request:
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing
+        with:
+          ref: testing
       - name: Build and run the builder
         run: |
           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
@@ -33,7 +33,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#          branch: testing
+          branch: testing
 
   # Try to build different containers using script-built template container.
   trystable:
@@ -72,8 +72,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing
+        with:
+          ref: testing
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
