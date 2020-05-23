@@ -2,63 +2,40 @@ name: Docker
 on:
   schedule:
     - cron: '11 23 * * *'
-      
   push:
-    branches: 
-      - master    
-
-  # Run tests for any PRs.
+    branches:
+      - master
   pull_request:
 
 jobs:
   prepare:
+    name: Build the builder and extract the updated template
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build the builder
+      - name: Build and run the builder
         run: |
           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
           docker run --name buildercon bone4cmdr/jlinkmc:builder
-          docker cp buildercon:/working/template ./Dockerfile
-      - name: Preserve the updated template, in case needed
-        uses: actions/upload-artifact@v1
+      - name: Grab built files
+        run: |
+          docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
+          docker cp buildercon:/working/template ./builds/stable/Dockerfile
+      - name: Commit changes to repo
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Templates updated!" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          name: new-template
-          path: Dockerfile
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
 
   # Try to build different containers using script-built template container.
-  teststable:
+  trystable:
     needs: prepare
-    runs-on: ubuntu-latest
-    env:
-      javadk: 14
-    steps:
-      - uses: actions/checkout@v2
-      - name: Attempt to build the stable image
-        run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
-  testoldstable:
-    needs: prepare
-    runs-on: ubuntu-latest
-    env:
-      javadk: 13
-    steps:
-      - uses: actions/checkout@v2
-      - name: Attempt to build the old stable image
-        run: |
-          docker build --build-arg JDK_VERSION=$javadk -t ethco/jlinkmc:jdk$javadk .
-  testea:
-    runs-on: ubuntu-latest
-    env:
-      javadk: 15
-    steps:
-      - uses: actions/checkout@v2
-      - name: Attempt to build the early access image
-        run: docker build -t ethco/jlinkmc:jdk$javadk ./ea
-  pushstable:
-    # Ensure test job passes before pushing image.
-    needs: teststable
-    name: Push and tag stable Docker image to Docker hub
+    name: Try to build the stable image, then tag and push to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -69,9 +46,11 @@ jobs:
           repository: ethco/jlinkmc
           tags: stable,jdk14,latest
           build_args: JDK_VERSION=14
-  pusholdstable:
-    needs: testoldstable
-    name: Push and tag old stable Docker image to Docker hub
+          dockerfile: ./builds/stable/Dockerfile
+
+  tryoldstable:
+    needs: prepare
+    name: Try to build the old stable image, then tag and push to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -82,9 +61,11 @@ jobs:
           repository: ethco/jlinkmc
           tags: oldstable,jdk13
           build_args: JDK_VERSION=13
-  pushea:
-    needs: testea
-    name: Push and tag early access Docker image to Docker hub
+          dockerfile: .builds/oldstable/Dockerfile
+
+  # JDK15 doesn't need the builder script due to native muslc code
+  tryea:
+    name: Try to build the early access image, then tag and push to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -94,4 +75,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
           tags: ea,jdk15
-          dockerfile: ./ea/Dockerfile
+          dockerfile: .builds/ea/Dockerfile
