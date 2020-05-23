@@ -20,12 +20,10 @@ jobs:
         run: |
           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
           docker run --name buildercon bone4cmdr/jlinkmc:builder
-      - name: Grab built files
+      - name: Grab built files and commit changes
         run: |
           docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
           docker cp buildercon:/working/template ./builds/stable/Dockerfile
-      - name: Commit changes to repo
-        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Templates updated!" -a
