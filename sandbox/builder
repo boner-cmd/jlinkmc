@@ -11,6 +11,7 @@ find_pack() {
   readonly sedargs
   output="$(sed "${sedargs}" <(printf %s "${1}") \
     | sort \
+    | tail -n 1)"
   printf "%s\n" "$output"
 }
 
