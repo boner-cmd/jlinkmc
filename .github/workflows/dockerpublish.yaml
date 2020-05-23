@@ -64,7 +64,7 @@ jobs:
           repository: ethco/jlinkmc
           tags: oldstable,jdk13
           build_args: JDK_VERSION=13
-          dockerfile: .builds/oldstable/Dockerfile
+          dockerfile: ./builds/oldstable/Dockerfile
 
   # JDK15 doesn't need the builder script due to native muslc code
   tryea:
@@ -80,4 +80,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
           tags: ea,jdk15
-          dockerfile: .builds/ea/Dockerfile
+          dockerfile: ./builds/ea/Dockerfile
