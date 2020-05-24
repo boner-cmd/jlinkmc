@@ -1,10 +1,10 @@
 name: Get Servers
 on:
   schedule:
-    - cron: '11 23 * 4,13,22,31 *'
+    - cron: '11 23 4,13,22,31 * *'
   push:
     branches:
-      - testing  
+      - testing
 
 jobs:
   getservs:
