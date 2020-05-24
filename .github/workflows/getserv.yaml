@@ -18,12 +18,12 @@ jobs:
       - name: Download Minecraft
         run: |
           curl -Lf $mojanglink -o ./no-dist/minecraft.jar
-          gpg -c --cipher-algo CAMELLIA256 --passphrase="${{ secrets.MC_CRYPT }}" --batch minecraft.jar
+          gpg -c --cipher-algo CAMELLIA256 --passphrase="${{ secrets.MC_CRYPT }}" --batch ./no-dist/minecraft.jar
           rm ./no-dist/minecraft.jar
       - name: Download PaperMC
         run: |
           curl -Lf $paperlink -o ./no-dist/papermc.jar
-          gpg -c --cipher-algo CAMELLIA256 --passphrase="${{ secrets.PMC_CRYPT }}" --batch papermc.jar
+          gpg -c --cipher-algo CAMELLIA256 --passphrase="${{ secrets.PMC_CRYPT }}" --batch ./no-dist/papermc.jar
           rm ./no-dist/papermc.jar
       - name: Commit changes to repo
         run: |
