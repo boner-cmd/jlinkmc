@@ -18,7 +18,7 @@ The transition to Portola or another muslc build will occur when JDK15 reaches g
 
 # Compressed Size Comparison of linux/amd64 images
 
-![Size Reduction](https://img.shields.io/badge/Size%20Reduction-35.12%25-brightgreen) (As of 20200518)
+![Size Reduction](https://img.shields.io/badge/Size%20Reduction-35.12%25-brightgreen)
 
 + ethco/jlinkmc:jdk15 - 55.15 MB
 
