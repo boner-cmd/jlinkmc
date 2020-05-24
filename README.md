@@ -1,4 +1,4 @@
-![Docker](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master) ![Size Reduction](https://img.shields.io/badge/Size%20Reduction-35.12%25-brightgreen)
+![Docker](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master) ![Size Reduction](https://img.shields.io/badge/Size%20Reduction-35.12%25-brightgreen) ![Get Servers](https://github.com/boner-cmd/JLinkMC/workflows/Get%20Servers/badge.svg)
 
 # Tag Equivalence
 
