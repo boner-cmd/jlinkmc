@@ -1,0 +1,37 @@
+name: Get Servers
+on:
+  schedule:
+    - cron: '11 23 * 4,13,22,31 *'
+  push:
+    branches:
+      - testing  
+
+jobs:
+  getservs:
+    name: Download the Minecraft and PaperMC servers, then encrypt them
+    runs-on: ubuntu-latest
+    env:
+      mojanglink: https://launcher.mojang.com/v1/objects/bb2b6b1aefcd70dfd1892149ac3a215f6c636b07/server.jar
+      paperlink: https://papermc.io/api/v1/paper/1.15.2/latest/download
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Minecraft
+        run: |
+          curl -Lf $mojanglink -o ./no-dist/minecraft.jar
+          gpg -c --cipher-algo CAMELLIA256 --passphrase ${{ secrets.MC_CRYPT }} --batch minecraft.jar
+          rm ./no-dist/minecraft.jar
+      - name: Download PaperMC
+        run: |
+          curl -Lf $paperlink -o ./no-dist/papermc.jar
+          gpg -c --cipher-algo CAMELLIA256 --passphrase ${{ secrets.PMC_CRYPT }} --batch papermc.jar
+          rm ./no-dist/papermc.jar
+      - name: Commit changes to repo
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Minecraft servers downloaded and encrypted!" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: testing
