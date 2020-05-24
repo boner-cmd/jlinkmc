@@ -15,6 +15,8 @@ jobs:
       paperlink: https://papermc.io/api/v1/paper/1.15.2/latest/download
     steps:
       - uses: actions/checkout@v2
+      - name: Remove old files
+        run: rm ./no-dist/*
       - name: Download Minecraft
         run: |
           curl -Lf $mojanglink -o ./no-dist/minecraft.jar
