@@ -69,10 +69,10 @@ main() {
   curl -LfsS "${GCC_FULL_URL}.sig" "${ZLIB_FULL_URL}.sig" -O -O \
     || exit 1
 
-  gpg --verify-files "*.sig" \
+  gpg --verify-files "${GCC_FULL_URL}.sig" "${ZLIB_FULL_URL}.sig" \
     || exit 1
 
-  rm "*.sig"  
+  rm "*.sig"
 
   declare -a sums
   for file in *; do
