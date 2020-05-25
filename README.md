@@ -1,4 +1,4 @@
-![Docker](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master) ![Get Servers](https://github.com/boner-cmd/JLinkMC/workflows/Get%20Servers/badge.svg)
+![Docker](https://github.com/boner-cmd/JLinkMC/workflows/Docker/badge.svg?branch=master)
 
 # Tag Equivalence
 
