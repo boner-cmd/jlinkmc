@@ -9,7 +9,7 @@ on:
 
 jobs:
   prepare:
-    name: Build the builder and extract the updated template
+    name: Build the builder and update the template
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
   # Try to build different containers using script-built template container.
   trystable:
     needs: prepare
-    name: Try to build the stable image, then tag and push to Docker Hub
+    name: Build the stable image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
 
   tryoldstable:
     needs: prepare
-    name: Try to build the old stable image, then tag and push to Docker Hub
+    name: Build the old stable image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
 
   # JDK15 doesn't need the builder script due to native muslc code
   tryea:
-    name: Try to build the early access image, then tag and push to Docker Hub
+    name: Build the early access image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
