@@ -66,6 +66,14 @@ main() {
   curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
     || exit 1
 
+  curl -Lf "${GCC_FULL_URL}.sig" "${ZLIB_FULL_URL}.sig" -O -O \
+    || exit 1
+
+  for file in *.sig; do
+    gpg --verify "${file}" || exit 1
+    rm "${file}"
+  done
+
   declare -a sums
   for file in *; do
     sums+=("$(sha256sum "./${file}" | head -c 64)")
