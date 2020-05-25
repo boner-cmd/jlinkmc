@@ -48,11 +48,6 @@ This image was jlinked using the following Java modules, which, to the best of m
 
 Minecraft itself requires all of the above except java.instrument
 
-# Goals
-
-+ Implement functionality testing for successfully-built images
-+ Add support for PGP-based signature verification, [despite its shortcomings](https://arstechnica.com/information-technology/2016/12/op-ed-im-giving-up-on-pgp/)
-
 # Source
 
 I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). Builds for JDK 13, JDK 14, and JDK 15 are automated by GitHub Actions. Issues are enabled, so if something doesn't work, then I look forward to the challenge of correcting it. Test (and any other) suggestions are always welcomed.
