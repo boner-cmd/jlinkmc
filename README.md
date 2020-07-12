@@ -16,17 +16,17 @@ The `latest` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it
 
 The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. The build using the early access JDK can be found in the `ea` tag.
 
-# Compressed Size Comparison of linux/amd64 images
+# Compressed Size Comparison of linux/amd64 Images
 
-![Size Reduction](https://img.shields.io/badge/Size%20Reduction-35.12%25-brightgreen)
+![Size Reduction](https://img.shields.io/badge/Size%20Reduction-64.35%25-brightgreen)
 
-+ ethco/jlinkmc:jdk15 - 55.15 MB
++ ethco/jlinkmc:jdk15 - 55.13 MB
 
-+ ethco/jlinkmc:jdk14 - 74.06 MB
++ ethco/jlinkmc:jdk14 - 75.17 MB
 
-+ AdoptOpenJDK/openjdk14:alpine - 210.88 MB
++ AdoptOpenJDK/openjdk14:alpine - 210.87 MB
 
-+ AdoptOpenJDK:latest - 240.38 MB
++ AdoptOpenJDK:latest - 240.91 MB
 
 # Contents
 
