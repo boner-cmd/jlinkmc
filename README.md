@@ -2,9 +2,9 @@
 
 # Tag Equivalence
 
-+ `latest` `stable` `jdk14`
-+ `oldstable` `jdk13`
-+ `ea` `jdk15`
++ `latest` `stable` `jdk15`
++ `oldstable` `jdk14`
++ `ea` `jdk16`
 
 Stability refers to the JDK, not to the container, which is _perpetually unstable_.
 
