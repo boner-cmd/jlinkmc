@@ -49,8 +49,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: stable,jdk14,latest
-          build_args: JDK_VERSION=14
+          tags: stable,jdk15,latest
+          build_args: JDK_VERSION=15
           dockerfile: ./builds/stable/Dockerfile
 
   tryoldstable:
@@ -60,14 +60,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 #        with:
-#          ref: testing      
+#          ref: testing
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: oldstable,jdk13
-          build_args: JDK_VERSION=13
+          tags: oldstable,jdk14
+          build_args: JDK_VERSION=14
           dockerfile: ./builds/oldstable/Dockerfile
 
   # JDK15 doesn't need the builder script due to native muslc code
@@ -83,5 +83,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: ea,jdk15
+          tags: ea,jdk16
           dockerfile: ./builds/ea/Dockerfile
