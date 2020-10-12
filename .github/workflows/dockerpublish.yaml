@@ -70,7 +70,7 @@ jobs:
           build_args: JDK_VERSION=14
           dockerfile: ./builds/oldstable/Dockerfile
 
-  # JDK15 doesn't need the builder script due to native muslc code
+  # JDK16 doesn't need the builder script due to native muslc code
   tryea:
     name: Build the early access image, then tag and push to Docker
     runs-on: ubuntu-latest
