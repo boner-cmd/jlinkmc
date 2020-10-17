@@ -61,14 +61,10 @@ jobs:
         with:
           context: .
           file: ./builds/stable/Dockerfile
-          pull: true
+          pull: false
           push: true
+          no-cache: true
           build-args: JDK_VERSION=15
-  # --cache-from args?
-  # --cache-to args?
-  # --no-cache?
-          cache-from: type=registry,ref=ethco/jlinkmc:jdk15
-          cache-to: type=inline
           tags: ethco/jlinkmc:stable,jdk15,latest
 
   tryoldstable:
@@ -96,14 +92,10 @@ jobs:
         with:
           context: .
           file: ./builds/oldstable/Dockerfile
-          pull: true
+          pull: false
           push: true
+          no-cache: true
           build-args: JDK_VERSION=14
-  # --cache-from args?
-  # --cache-to args?
-  # --no-cache?
-          cache-from: type=registry,ref=ethco/jlinkmc:jdk14
-          cache-to: type=inline
           tags: ethco/jlinkmc:oldstable,jdk14
 
   # JDK16 doesn't need the builder script due to native muslc code
@@ -131,12 +123,8 @@ jobs:
         with:
           context: .
           file: ./builds/oldstable/Dockerfile
-          pull: true
+          pull: false
           push: true
+          no-cache: true
           build-args: JDK_VERSION=16
-  # --cache-from args?
-  # --cache-to args?
-  # --no-cache?
-          cache-from: type=registry,ref=ethco/jlinkmc:jdk16
-          cache-to: type=inline
           tags: ethco/jlinkmc:ea,jdk16
