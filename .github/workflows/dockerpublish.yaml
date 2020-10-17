@@ -29,6 +29,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Templates updated!" -a
+      # next step is a sticking point
+      # look for merge-based solutions?    
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
