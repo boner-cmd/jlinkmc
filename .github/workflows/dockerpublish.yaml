@@ -5,7 +5,7 @@ on:
   # remove on push if test passes
   push:
     branches:
-      - testing
+      # - testing
 
 jobs:
   prepare:
