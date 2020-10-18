@@ -7,7 +7,7 @@ on:
 
 jobs:
   prepare:
-    name: Build the builder, update the template
+    name: Build builder, update template
     runs-on: ubuntu-latest
     steps:
       -
