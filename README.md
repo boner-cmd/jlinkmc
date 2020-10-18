@@ -2,9 +2,9 @@
 
 # Tag Equivalence
 
-+ `latest` `stable` `jdk14`
-+ `oldstable` `jdk13`
-+ `ea` `jdk15`
++ `latest` `stable` `jdk15`
++ `oldstable` `jdk14`
++ `ea` `jdk16`
 
 Stability refers to the JDK, not to the container, which is _perpetually unstable_.
 
@@ -14,19 +14,19 @@ Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft 
 
 The `latest` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it uses [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine.
 
-The transition to Portola or another muslc build will occur when JDK15 reaches general availability, currently scheduled for 15 September, 2020, and will result in further size reduction. The build using the early access JDK can be found in the `ea` tag.
+The transition to Portola or another muslc build will occur when an Alpine JDK reaches General Availability and will result in further size reduction. Unfortunately, Alpine JDKs havent' been making the testing volume threshold for GA status, which is why they keep getting rolled to the next EA candidate. The build using the early access JDK can be found in the `ea` tag.
 
-# Compressed Size Comparison of linux/amd64 Images
+# Compressed Size Comparison of linux/amd64 images
 
-![Size Reduction](https://img.shields.io/badge/Size%20Reduction-64.35%25-brightgreen)
+![Size Reduction](https://img.shields.io/badge/Size%20Reduction-64.69%25-brightgreen)
 
-+ ethco/jlinkmc:jdk15 - 55.13 MB
++ ethco/jlinkmc:jdk16 - 53.76 MB
 
-+ ethco/jlinkmc:jdk14 - 75.17 MB
++ ethco/jlinkmc:jdk15 - 73.09 MB
 
-+ AdoptOpenJDK/openjdk14:alpine - 210.87 MB
++ AdoptOpenJDK/openjdk15:alpine - 206.99 MB
 
-+ AdoptOpenJDK:latest - 240.91 MB
++ AdoptOpenJDK:latest - 240.61 MB
 
 # Contents
 
@@ -50,4 +50,4 @@ Minecraft itself requires all of the above except java.instrument
 
 # Source
 
-I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). Builds for JDK 13, JDK 14, and JDK 15 are automated by GitHub Actions. Issues are enabled, so if something doesn't work, then I look forward to the challenge of correcting it. Test (and any other) suggestions are always welcomed.
+I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). Builds for the current GA JDK, the previous JDK, and the current EA JDK are automated by GitHub Actions. Issues are enabled, so if something doesn't work, let me know! Testing and any other suggestions are always welcomed.
