@@ -2,7 +2,10 @@ name: Docker
 on:
   push:
     branches:
-      - next-jdk
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   prepare:
@@ -11,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: next-jdk
+          ref: ${{ github.ref }}
       - name: Build and run the builder
         run: |
           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
@@ -39,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: next-jdk
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -56,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: testing
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -73,7 +76,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: next-jdk
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
