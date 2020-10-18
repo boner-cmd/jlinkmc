@@ -1,6 +1,8 @@
 name: Build and Cache
 
 on:
+  schedule:
+    - cron: '0 0 * * * '
   push:
     branches:
       - testing
