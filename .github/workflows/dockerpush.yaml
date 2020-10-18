@@ -39,7 +39,6 @@ jobs:
           push: true
 
   pusholdstable:
-    needs: prepare
     name: Push the old stable image
     runs-on: ubuntu-latest
     steps:
