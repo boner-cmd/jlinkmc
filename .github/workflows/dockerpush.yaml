@@ -1,0 +1,98 @@
+name: Build and Push
+
+on:
+  schedule:
+    - cron: '0 23 * * 0 '
+  # remove on push if test passes
+  push:
+    branches:
+      - testing
+
+jobs:
+  pushstable:
+    name: Push the stable image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: ./builds/.buildx-cache
+          key: buildx-stable-${{ github.sha }}
+          restore-keys: buildx-stable-
+      -
+        name: Build and cache the stable container
+        uses: docker/build-push-action@v2
+        with:
+          file: ./builds/stable/Dockerfile
+          build-args: JDK_VERSION=15
+          tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
+          cache-from: type=local,src=./builds/.buildx-cache
+          push: true
+
+  pusholdstable:
+    needs: prepare
+    name: Push the old stable image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: ./builds/.buildx-cache
+          key: buildx-oldstable-${{ github.sha }}
+          restore-keys: buildx-oldstable-
+      -
+        name: Build and cache the old stable container
+        uses: docker/build-push-action@v2
+        with:
+          file: ./builds/oldstable/Dockerfile
+          build-args: JDK_VERSION=14
+          tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
+          cache-from: type=local,src=./builds/.buildx-cache
+          push: true
+
+  pushea:
+    name: Push the early access image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: ./builds/.buildx-cache
+          key: buildx-ea-${{ github.sha }}
+          restore-keys: buildx-ea-
+      -
+        name: Build and cache the early access container
+        uses: docker/build-push-action@v2
+        with:
+          file: ./builds/ea/Dockerfile
+          build-args: JDK_VERSION=16
+          tags: ethco/jlinkmc:jdk16, ethco/jlinkmc:ea
+          cache-from: type=local,src=./builds/.buildx-cache
+          push: true
