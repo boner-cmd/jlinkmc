@@ -1,11 +1,11 @@
 name: Publish to Docker
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  # remove on push if test passes
-  push:
-    branches:
-      # - testing
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
+#   # remove on push if test passes
+#   push:
+#     branches:
+#       - testing
 
 jobs:
   prepare:
