@@ -4,7 +4,7 @@ on:
     branches:
       - testing
 
-# jobs:
+jobs:
 #   prepare:
 #     name: Build the builder and update the template
 #     runs-on: ubuntu-latest
