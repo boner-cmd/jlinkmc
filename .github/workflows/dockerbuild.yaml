@@ -1,42 +1,11 @@
 name: Build and cache the Docker container
+
 on:
   push:
     branches:
       - testing
 
 jobs:
-#   prepare:
-#     name: Build the builder and update the template
-#     runs-on: ubuntu-latest
-#     steps:
-#       -
-#         name: Checkout code
-#         uses: actions/checkout@v2
-#         with:
-#           ref: ${{ github.ref }}
-#       -
-#         name: Build and run the builder
-#         run: |
-#           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
-#           docker run --name buildercon bone4cmdr/jlinkmc:builder
-#       -
-#         name: Grab built files
-#         run: |
-#           docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
-#           docker cp buildercon:/working/template ./builds/stable/Dockerfile
-#       -
-#         name: Commit changes to repo
-#         run: |
-#           git config --local user.email "action@github.com"
-#           git config --local user.name "GitHub Action"
-#           git commit -m "Templates updated!" -a
-#       -
-#         name: Push changes
-#         uses: ad-m/github-push-action@master
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           branch: ${{ github.ref }}
-
   trystable:
     # needs: prepare
     name: Build and tag the stable image
@@ -80,57 +49,3 @@ jobs:
           cache-to: type=local,dest=/cache/.buildx-cache
           # we don't actually output this image anywhere... but we don't need to
           # it dies with the VM, but the cache used to create it will persist
-
-  # tryoldstable:
-  #   needs: prepare
-  #   name: Build and tag the stable image
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     -
-  #       name: Checkout code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         ref: ${{ github.ref }}
-  #     -
-  #       name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
-  #     -
-  #       name: Cache Docker layers
-  #       uses: actions/cache@v2
-  #       with:
-  #         # TODO optimize the caching process
-  #         # this cache still won't help with repeated downloads, but that's
-  #         # an issue that can only be solved with scripting, not in Actions
-  #         path: /cache/.buildx-cache
-  #         key: buildx-oldstable-${{ github.sha }}
-  #         restore-keys: |
-  #           buildx-oldstable-
-  #           buildx-
-  #     -
-  #       name: Build and cache the stable container
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         context: /builds/stable
-  #         build-args: JDK_VERSION=14
-  #         tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
-  #         cache-from: type=local,src=/cache/.buildx-cache
-  #         cache-to: type=local,dest=/cache/.buildx-cache
-
-  # tryoldstable:
-  #       name: Build and push
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         file: ./builds/oldstable/Dockerfile
-  #         push: true
-  #         build-args: JDK_VERSION=14
-  #         tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
-
-  # EA doesn't need the builder script due to native muslc code
-  # tryea:
-  #       name: Build and push
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         file: ./builds/ea/Dockerfile
-  #         push: true
-  #         build-args: JDK_VERSION=16
-  #         tags: ethco/jlinkmc:ea, ethco/jlinkmc:jdk16
