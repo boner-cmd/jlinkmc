@@ -5,37 +5,9 @@ on:
       - testing
 
 jobs:
-  # this job shouldn't need to change at all
-  prepare:
-    name: Build the builder and update the template
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      - name: Build and run the builder
-        run: |
-          docker build -t bone4cmdr/jlinkmc:builder ./sandbox
-          docker run --name buildercon bone4cmdr/jlinkmc:builder
-      - name: Grab built files
-        run: |
-          docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
-          docker cp buildercon:/working/template ./builds/stable/Dockerfile
-      - name: Commit changes to repo
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Templates updated!" -a
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
   # Try to build the stable container using the new action
   # tryea would have been simpler, but trystable is more representative
   teststable:
-    needs: prepare
     name: Build the stable image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
