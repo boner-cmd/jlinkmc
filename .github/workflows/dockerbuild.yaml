@@ -63,9 +63,40 @@ jobs:
         name: Build and cache the old stable container
         uses: docker/build-push-action@v2
         with:
-          file: ./builds/stable/Dockerfile
+          file: ./builds/oldstable/Dockerfile
           build-args: JDK_VERSION=14
           tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
+          cache-from: type=local,src=./builds/.buildx-cache
+          cache-to: type=local,dest=./builds/.buildx-cache
+          # intentionally no output- built image dies with the VM
+
+  tryea:
+    name: Try the early access image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          # TODO look for ways to optimize the container layer caching process
+          path: ./builds/.buildx-cache
+          key: buildx-ea-${{ github.sha }}
+          restore-keys: buildx-ea-
+      -
+        name: Build and cache the old stable container
+        uses: docker/build-push-action@v2
+        with:
+          file: ./builds/ea/Dockerfile
+          build-args: JDK_VERSION=16
+          tags: ethco/jlinkmc:jdk16, ethco/jlinkmc:ea
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
           # intentionally no output- built image dies with the VM
