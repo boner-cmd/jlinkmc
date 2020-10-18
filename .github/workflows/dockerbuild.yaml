@@ -45,6 +45,7 @@ jobs:
           context: ./builds/stable
           build-args: JDK_VERSION=15
           tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
-          cache-from: type=local,src=./.buildx-cache
+#         make sure it caches once before trying to read the cache
+#          cache-from: type=local,src=./.buildx-cache
           cache-to: type=local,dest=./.buildx-cache
           # intentionally no output- built image dies with the VM
