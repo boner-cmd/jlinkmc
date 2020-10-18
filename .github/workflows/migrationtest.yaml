@@ -33,7 +33,4 @@ jobs:
           push: true
           build-args: JDK_VERSION=15
           # replace this ASAP with no-cache: true
-          tags:
-            - ethco/jlinkmc:latest
-            - ethco/jlinkmc:JDK15
-            - ethco/jlinkmc:stable
+          tags: ethco/jlinkmc:latest, ethco/jlinkmc:JDK15, ethco/jlinkmc:stable
