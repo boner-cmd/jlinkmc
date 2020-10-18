@@ -55,7 +55,6 @@ jobs:
         name: Cache Docker layers
         uses: actions/cache@v2
         with:
-          # TODO look for ways to optimize the container layer caching process
           path: ./builds/.buildx-cache
           key: buildx-stable-${{ github.sha }}
           restore-keys: buildx-stable-
@@ -68,7 +67,6 @@ jobs:
           tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
-          # intentionally no output- built image dies with the VM
 
   tryoldstable:
     needs: prepare
@@ -87,7 +85,6 @@ jobs:
         name: Cache Docker layers
         uses: actions/cache@v2
         with:
-          # TODO look for ways to optimize the container layer caching process
           path: ./builds/.buildx-cache
           key: buildx-oldstable-${{ github.sha }}
           restore-keys: buildx-oldstable-
@@ -100,7 +97,6 @@ jobs:
           tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
-          # intentionally no output- built image dies with the VM
 
   tryea:
     name: Try the early access image
@@ -118,7 +114,6 @@ jobs:
         name: Cache Docker layers
         uses: actions/cache@v2
         with:
-          # TODO look for ways to optimize the container layer caching process
           path: ./builds/.buildx-cache
           key: buildx-ea-${{ github.sha }}
           restore-keys: buildx-ea-
@@ -131,4 +126,3 @@ jobs:
           tags: ethco/jlinkmc:jdk16, ethco/jlinkmc:ea
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
-          # intentionally no output- built image dies with the VM
