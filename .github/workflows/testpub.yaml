@@ -39,14 +39,30 @@ jobs:
     name: Build the stable image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
         with:
           ref: testing
-      - uses: docker/build-push-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ethco/jlinkmc
-          tags: stable,jdk15,latest
-          build_args: JDK_VERSION=15
-          dockerfile: ./builds/stable/Dockerfile
+      -
+        name: Build and push
+            uses: docker/build-push-action@v2
+            with:
+              context: .
+              file: ./builds/stable/Dockerfile
+              pull: true
+              push: true
+              build-args: JDK_VERSION=15
+              # replace this ASAP with no-cache: true
+              cache-from: type=registry,ref=ethco/jlinkmc:stable
+              cache-to: type=inline
+              tags: ethco/jlinkmc:stable,jdk15,latest
