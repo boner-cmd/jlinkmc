@@ -26,7 +26,7 @@ jobs:
           # TODO optimize the caching process
           # this cache still won't help with repeated downloads, but that's
           # an issue that can only be solved with scripting, not in Actions
-          path: ./cache/.buildx-cache
+          path: ./builds/stable/.buildx-cache
           key: buildx-stable-${{ github.sha }}
           restore-keys: |
             buildx-stable-
@@ -45,6 +45,6 @@ jobs:
           context: ./builds/stable
           build-args: JDK_VERSION=15
           tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
-          cache-from: type=local,src=./cache/.buildx-cache
-          cache-to: type=local,dest=./cache/.buildx-cache
+          cache-from: type=local,src=./.buildx-cache
+          cache-to: type=local,dest=./.buildx-cache
           # intentionally no output- built image dies with the VM
