@@ -1,125 +1,125 @@
-name: Publish to Docker
+# name: Publish to Docker
 # on:
 #   schedule:
-#     - cron: '0 0 * * *'
+#     - cron: '0 0 * * * '
 #   # remove on push if test passes
 #   push:
 #     branches:
 #       - testing
-
-jobs:
-  prepare:
-    name: Build the builder and update the template
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      -
-        name: Build and run the builder
-        run: |
-          docker build -t bone4cmdr/jlinkmc:builder ./sandbox
-          docker run --name buildercon bone4cmdr/jlinkmc:builder
-      -
-        name: Grab built files
-        run: |
-          docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
-          docker cp buildercon:/working/template ./builds/stable/Dockerfile
-      -
-        name: Commit changes to repo
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Templates updated!" -a
-      -
-        name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
-  trystable:
-    needs: prepare
-    name: Build the stable image, then tag and push to Docker
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          file: ./builds/stable/Dockerfile
-          push: true
-          build-args: JDK_VERSION=15
-          tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
-
-  tryoldstable:
-    needs: prepare
-    name: Build the previous stable image, then tag and push to Docker
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          file: ./builds/oldstable/Dockerfile
-          push: true
-          build-args: JDK_VERSION=14
-          tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
-
-  # EA doesn't need the builder script due to native muslc code
-  tryea:
-    name: Build the early access image, then tag and push to Docker
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          file: ./builds/ea/Dockerfile
-          push: true
-          build-args: JDK_VERSION=16
-          tags: ethco/jlinkmc:ea, ethco/jlinkmc:jdk16
+#
+# jobs:
+#   prepare:
+#     name: Build the builder and update the template
+#     runs-on: ubuntu-latest
+#     steps:
+#       -
+#         name: Checkout code
+#         uses: actions/checkout@v2
+#         with:
+#           ref: ${{ github.ref }}
+#       -
+#         name: Build and run the builder
+#         run: |
+#           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
+#           docker run --name buildercon bone4cmdr/jlinkmc:builder
+#       -
+#         name: Grab built files
+#         run: |
+#           docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
+#           docker cp buildercon:/working/template ./builds/stable/Dockerfile
+#       -
+#         name: Commit changes to repo
+#         run: |
+#           git config --local user.email "action@github.com"
+#           git config --local user.name "GitHub Action"
+#           git commit -m "Templates updated!" -a
+#       -
+#         name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: ${{ github.ref }}
+#
+#   trystable:
+#     needs: prepare
+#     name: Build the stable image, then tag and push to Docker
+#     runs-on: ubuntu-latest
+#     steps:
+#       -
+#         name: Checkout code
+#         uses: actions/checkout@v2
+#         with:
+#           ref: ${{ github.ref }}
+#       -
+#         name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+#       -
+#         name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#       -
+#         name: Build and push
+#         uses: docker/build-push-action@v2
+#         with:
+#           file: ./builds/stable/Dockerfile
+#           push: true
+#           build-args: JDK_VERSION=15
+#           tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
+#
+#   tryoldstable:
+#     needs: prepare
+#     name: Build the previous stable image, then tag and push to Docker
+#     runs-on: ubuntu-latest
+#     steps:
+#       -
+#         name: Checkout code
+#         uses: actions/checkout@v2
+#         with:
+#           ref: ${{ github.ref }}
+#       -
+#         name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+#       -
+#         name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#       -
+#         name: Build and push
+#         uses: docker/build-push-action@v2
+#         with:
+#           file: ./builds/oldstable/Dockerfile
+#           push: true
+#           build-args: JDK_VERSION=14
+#           tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
+#
+#   # EA doesn't need the builder script due to native muslc code
+#   tryea:
+#     name: Build the early access image, then tag and push to Docker
+#     runs-on: ubuntu-latest
+#     steps:
+#       -
+#         name: Checkout code
+#         uses: actions/checkout@v2
+#         with:
+#           ref: ${{ github.ref }}
+#       -
+#         name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+#       -
+#         name: Login to DockerHub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+#       -
+#         name: Build and push
+#         uses: docker/build-push-action@v2
+#         with:
+#           file: ./builds/ea/Dockerfile
+#           push: true
+#           build-args: JDK_VERSION=16
+#           tags: ethco/jlinkmc:ea, ethco/jlinkmc:jdk16
