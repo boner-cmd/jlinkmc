@@ -3,9 +3,9 @@ name: Build and Cache
 on:
   schedule:
     - cron: '0 0 * * * '
-  push:
+  pull_request:
     branches:
-      - testing
+      - master
 
 jobs:
   prepare:
