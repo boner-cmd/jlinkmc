@@ -1,9 +1,10 @@
 name: Docker
 on:
+  schedule:
+    - cron: '11 23 * * 6'
   push:
     branches:
       - master
-      - next-jdk
 
 jobs:
   prepare:
