@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - master
-#     - testing
-  pull_request:
 
 jobs:
   prepare:
@@ -14,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing
+        with:
+          ref: ${{ github.ref }}
       - name: Build and run the builder
         run: |
           docker build -t bone4cmdr/jlinkmc:builder ./sandbox
@@ -33,7 +31,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#          branch: testing
+          branch: ${{ github.ref }}
 
   # Try to build different containers using script-built template container.
   trystable:
@@ -42,15 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing
+        with:
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: stable,jdk14,latest
-          build_args: JDK_VERSION=14
+          tags: stable,jdk15,latest
+          build_args: JDK_VERSION=15
           dockerfile: ./builds/stable/Dockerfile
 
   tryoldstable:
@@ -59,29 +57,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing      
+        with:
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: oldstable,jdk13
-          build_args: JDK_VERSION=13
+          tags: oldstable,jdk14
+          build_args: JDK_VERSION=14
           dockerfile: ./builds/oldstable/Dockerfile
 
-  # JDK15 doesn't need the builder script due to native muslc code
+  # JDK16 doesn't need the builder script due to native muslc code
   tryea:
     name: Build the early access image, then tag and push to Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        with:
-#          ref: testing
+        with:
+          ref: ${{ github.ref }}
       - uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ethco/jlinkmc
-          tags: ea,jdk15
+          tags: ea,jdk16
           dockerfile: ./builds/ea/Dockerfile
