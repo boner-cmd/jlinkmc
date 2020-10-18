@@ -28,7 +28,6 @@ jobs:
           key: buildx-stable-${{ github.sha }}
           restore-keys: |
             buildx-stable-
-            buildx-
       -
         name: Build and cache the stable container
         uses: docker/build-push-action@v2
