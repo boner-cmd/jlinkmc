@@ -2,7 +2,7 @@
 # this specific Dockerfile was generated DATE_
 
 # Determine which version of OpenJDK to use later
-ARG JDK_VERSION=14
+ARG JDK_VERSION=15
 
 # Alpine base
 FROM alpine:latest AS prepack

@@ -1,8 +1,8 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Sat, 17 Oct 2020 23:24:26 +0000
+# this specific Dockerfile was generated Sun, 18 Oct 2020 01:34:12 +0000
 
 # Determine which version of OpenJDK to use later
-ARG JDK_VERSION=14
+ARG JDK_VERSION=15
 
 # Alpine base
 FROM alpine:latest AS prepack
