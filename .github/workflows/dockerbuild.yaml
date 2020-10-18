@@ -8,7 +8,7 @@ on:
 jobs:
   trystable:
     # needs: prepare
-    name: Build and tag the stable image
+    name: Try the stable image
     runs-on: ubuntu-latest
     steps:
       -
@@ -40,7 +40,7 @@ jobs:
 
   tryoldstable:
     # needs: prepare
-    name: Build and tag the old stable image
+    name: Try the old stable image
     runs-on: ubuntu-latest
     steps:
       -
@@ -60,7 +60,7 @@ jobs:
           key: buildx-oldstable-${{ github.sha }}
           restore-keys: buildx-oldstable-
       -
-        name: Build and cache the stable container
+        name: Build and cache the old stable container
         uses: docker/build-push-action@v2
         with:
           file: ./builds/stable/Dockerfile
