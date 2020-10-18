@@ -1,4 +1,2 @@
 /no-dist
 .github/workflows/getserv.yaml
-# temporarily stop trying to run this
-.github/workflows/dockerpublish.yaml
