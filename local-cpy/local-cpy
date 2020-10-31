@@ -13,7 +13,7 @@
 check_file_list(){
   for somefile in $valid_files
   do
-    if [ "$1" = "$somefile" ]
+    if [ "${1}" = "${somefile}" ]
     then
       return
     fi
@@ -24,11 +24,11 @@ check_file_list(){
 # see if a file already exists
 
 exists_in_local(){
-  name_partial="$1"
+  name_partial="${1}"
   file_hits=0
-  for file in "$name_partial"*
+  for file in "${name_partial}"*
   do
-    if [ -e "$file" ]
+    if [ -e "${file}" ]
     then
     file_hits=$((file_hits + 1))
     fi
@@ -43,9 +43,9 @@ exists_in_local(){
   fi
 }
 
-# checksum a file
+# hash a file
 
-sum_file(){
+hash_file(){
   sha256sum "$1" > "$1".sha256
 }
 
@@ -59,8 +59,8 @@ encrypt_local(){
 # compare a local hash to a remote hash
 # TODO need to figure out if sha256sum will allow comparing a hash to a file with a diff name
 
-compare_sums(){
-  download "$1" "sum"
+compare_hashes(){
+  download "$1" "hash"
   # complications here from fuzzy naming with globs
 
 
@@ -75,21 +75,20 @@ move_previous(){
 
 # remove files without matching sha256sums and sha256sums without matching files
 
-clean(){
-
+clean_local(){
   for file in ./* ; do
     # ${file: :-10} works in alpine but is technically not POSIX-compliant
     trimmed_filename=$(echo "$file" | cut -b -$(( ${#file} - 10)))
     if [ "$file" != "${trimmed_filename}.sha256sum" ] # file is not a sha256sum
     then
-      if [ ! -e "${file}.sha256sum" ] # check for corresponding checksum
+      if [ ! -e "${file}.sha256sum" ] # check for corresponding hash
       then
         rm "$file" # delete orphaned file
       fi
     else # file is a sha256sum
       if [ ! -e "$trimmed_filename" ] # check for corresponding file
       then
-        rm "$file" # delete orphaned checksum
+        rm "$file" # delete orphaned hash
       fi
     fi
   done
@@ -100,19 +99,19 @@ main() {
   then
     fail "Incorrect number of arguments. Only pass pre-formatted file name."
   fi
-
+  clean_local
   check_file_list "$1"
   if exists_in_local "$1"
   then
-    if compare_sums "$1"
+    if compare_hashes "$1"
     then
       exit 0
     fi
   fi
   move_previous "$1"
   download "$1" "file"
-  sum_file "$1"
-  encrypt_local "$1" "$GPG_PASSPHRASE"
+  hash_file "$1"
+  encrypt_local "$1"
 }
 
 main "$@"

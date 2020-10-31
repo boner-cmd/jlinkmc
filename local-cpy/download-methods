@@ -14,8 +14,8 @@ download() {
   then
     case "$2" in
       f*) ;;
-      s*) ;;
-      *) fail 'Specify "file" or "sum" to download.'
+      h*) ;;
+      *) fail 'Specify "file" or "hash" to download.'
     esac
   fi
 
