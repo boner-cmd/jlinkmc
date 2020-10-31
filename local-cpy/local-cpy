@@ -57,6 +57,9 @@ encrypt_local(){
 }
 
 # compare a local hash to a remote hash
+# there are no remote hashes
+# therefore a new download must be done no matter what
+# only workaround would be checking file names, which is beyond imprecise
 # TODO need to figure out if sha256sum will allow comparing a hash to a file with a diff name
 
 compare_hashes(){
