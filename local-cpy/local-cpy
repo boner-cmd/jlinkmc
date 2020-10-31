@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# requires gnupg
+# assumes existence of github secret passed as env variable GPG_PASSPHRASE
+# decrypt with gpg --batch --passphrase "$GPG_PASSPHRASE" file.gpg
+
 . ./download-methods
 . ./supported-files
 . ./error-handler
@@ -25,7 +30,8 @@ check_file_list(){
 
 exists_in_local(){
   name_partial="$1"
-  testerror=$(test -e "$name_partial"* 2>&1)
+  # shellcheck disable=SC2144
+  testerror=$([ -e "$name_partial"* ] 2>&1)
   test_result="$?" # this is the result of the subshell, not the assignment
   if $test_result -eq 0
   then
@@ -45,7 +51,6 @@ exists_in_local(){
 }
 
 # hash a file
-# alpine:latest has sha256sum
 
 hash_file(){
   sha256sum "$1" > "$1".sha256
@@ -54,19 +59,47 @@ hash_file(){
 # encrypt a file
 
 encrypt_local(){
-  true
+  # TODO add error handling
+  gpg --batch --cipher-algo CAMELLIA128 --passphrase "$GPG_PASSPHRASE" -c "$1"
 }
 
 # compare a local hash to a remote hash
+# TODO need to figure out if sha256sum will allow comparing a hash to a file with a diff name
 
 compare_hashes(){
   download "$1" "hash"
+  # complications here from fuzzy naming with globs
+
+
+
 }
 
 # move old version and hash to another directory for discretionary deletion
 
 move_previous(){
   mv -n -t ./old ./"$1"*
+}
+
+# remove files without matching sha256sums and sha256sums without matching files
+
+clean(){
+  # delete orphaned checksums
+  for file in * ; do
+    if [ "$file" ]
+    then
+      true
+    fi
+  done
+
+  for file in *.sha256sum ; do
+    # ${file: :-10} works in alpine but is technically not POSIX-compliant
+    trimmed_filename=$(echo "$file" | cut -b -$(( ${#file} - 10)))
+    if [ ! -e "$trimmed_filename" ]
+    then
+      rm "$file"
+    fi
+  done
+
 }
 
 main() {
@@ -86,7 +119,7 @@ main() {
   move_previous "$1"
   download "$1" "file"
   hash_file "$1"
-  encrypt_local "$1"
+  encrypt_local "$1" "$GPG_PASSPHRASE"
 }
 
 main "$@"
