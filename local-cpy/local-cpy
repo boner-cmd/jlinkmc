@@ -15,8 +15,7 @@ check_file_list(){
   do
     if [ "$1" = "$somefile" ]
     then
-      hit_status=true
-      return $hit_status
+      return
     fi
   done
   fail "File not found in the list of valid files."
@@ -24,35 +23,29 @@ check_file_list(){
 
 # see if a file already exists
 
-# there are better general ways to check for file existence using globs, i.e.:
-# test -n "$(find . -maxdepth 1 -name 'glob*' -print -quit)"
-# but in this case, we want to fail if the glob is too greedy
-
 exists_in_local(){
   name_partial="$1"
-  # shellcheck disable=SC2144
-  testerror=$([ -e "$name_partial"* ] 2>&1)
-  test_result="$?" # this is the result of the subshell, not the assignment
-  if $test_result -eq 0
+  file_hits=0
+  for file in "$name_partial"*
+  do
+    if [ -e "$file" ]
+    then
+    file_hits=$((file_hits + 1))
+    fi
+  done
+
+  if $file_hits -eq 0
   then
-    return $test_result
-  elif $test_result -eq 1
-  then
-    return $test_result
-  elif $test_result -eq 2
-  then
-    error "$testerror"
+    return
+  else
     error "Check for existing file encountered more than one positive result."
     fail "Bad filename glob used to determine if local file exists."
-  else
-    error "$testerror"
-    fail "Unexpected result from test command."
   fi
 }
 
-# hash a file
+# checksum a file
 
-hash_file(){
+sum_file(){
   sha256sum "$1" > "$1".sha256
 }
 
@@ -66,8 +59,8 @@ encrypt_local(){
 # compare a local hash to a remote hash
 # TODO need to figure out if sha256sum will allow comparing a hash to a file with a diff name
 
-compare_hashes(){
-  download "$1" "hash"
+compare_sums(){
+  download "$1" "sum"
   # complications here from fuzzy naming with globs
 
 
@@ -83,23 +76,23 @@ move_previous(){
 # remove files without matching sha256sums and sha256sums without matching files
 
 clean(){
-  # delete orphaned checksums
-  for file in * ; do
-    if [ "$file" ]
-    then
-      true
-    fi
-  done
 
-  for file in *.sha256sum ; do
+  for file in ./* ; do
     # ${file: :-10} works in alpine but is technically not POSIX-compliant
     trimmed_filename=$(echo "$file" | cut -b -$(( ${#file} - 10)))
-    if [ ! -e "$trimmed_filename" ]
+    if [ "$file" != "${trimmed_filename}.sha256sum" ] # file is not a sha256sum
     then
-      rm "$file"
+      if [ ! -e "${file}.sha256sum" ] # check for corresponding checksum
+      then
+        rm "$file" # delete orphaned file
+      fi
+    else # file is a sha256sum
+      if [ ! -e "$trimmed_filename" ] # check for corresponding file
+      then
+        rm "$file" # delete orphaned checksum
+      fi
     fi
   done
-
 }
 
 main() {
@@ -111,14 +104,14 @@ main() {
   check_file_list "$1"
   if exists_in_local "$1"
   then
-    if compare_hashes "$1"
+    if compare_sums "$1"
     then
       exit 0
     fi
   fi
   move_previous "$1"
   download "$1" "file"
-  hash_file "$1"
+  sum_file "$1"
   encrypt_local "$1" "$GPG_PASSPHRASE"
 }
 
