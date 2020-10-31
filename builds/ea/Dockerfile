@@ -6,15 +6,17 @@ WORKDIR /opt/java/openjdk
 
 ENV EA_NUM="16"
 
+# https://jdk.java.net/16/
+
 ENV JDK_FILENAME="openjdk-16-ea+14_linux-x64-musl_bin.tar.gz"
 
-# TODO test if binutils, libgcc, and libstdc++ are needed for jlink
-# TODO autograb the EA build link, filename, and SHA256
-# TODO check the SHA256, especially since it's provided
+ENV JDK_URL="https://download.java.net/java/early_access/alpine/14/binaries/${JDK_FILENAME}"
+
+# jlink needs objcopy from binutils
 
 RUN apk update \
-  && apk add --no-cache curl binutils libgcc libstdc++ \
-  && curl -Lf https://download.java.net/java/early_access/alpine/14/binaries/${JDK_FILENAME} -O \
+  && apk add --no-cache curl binutils \
+  && curl -Lf ${JDK_URL} -O \
   && tar -xzf ${JDK_FILENAME} \
   && mv jdk-${EA_NUM}/* . \
   && rm -r jdk-${EA_NUM} \

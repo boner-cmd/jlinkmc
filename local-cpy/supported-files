@@ -1,0 +1,4 @@
+# shellcheck shell=sh
+# shellcheck disable=SC2034 # file used for import only
+
+valid_files="foutras-gpg gcc gerrand-rsa glibc-base glibc-bin glibc-i18n ea-jdk piotrowski-gpg zlib"

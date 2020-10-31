@@ -1,0 +1,73 @@
+# shellcheck shell=sh
+
+. ./error-handler
+
+# handles downloading files on a per-file basis
+# can optionally download hashes instead
+
+download() {
+  if [ "$3" ]
+  then
+    fail "Too many arguments."
+  fi
+  if [ "$2" ]
+  then
+    case "$2" in
+      f*) ;;
+      h*) ;;
+      *) fail 'Specify "file" or "hash" to download.'
+    esac
+  fi
+
+  if [ "$1" ]
+  then
+    case "$1" in
+      e*) get_ea_jdk "$2";;
+      f*) get_foutras_gpg "$2";;
+      gc*) get_gcc "$2";;
+      ge*) get_gerrand_rsa "$2";;
+      gl*e) get_glibc_base "$2";;
+      gl*i?) get_glibc_bin "$2";;
+      gl*8?) get_glibc_i18n "$2";;
+      p*) get_piotrowski_gpg "$2";;
+      z*) get_zlibc "$2";;
+      *) fail "Download method was called without a valid filename input."
+    esac
+  fi
+}
+
+get_gerrand_rsa() {
+  true
+}
+
+get_gcc() {
+  true
+}
+
+get_zlibc() {
+  true
+}
+
+get_foutras_gpg() {
+  true
+}
+
+get_piotrowski_gpg() {
+  true
+}
+
+get_ea_jdk() {
+  true
+}
+
+get_glibc_base() {
+  true
+}
+
+get_glibc_bin() {
+  true
+}
+
+get_glibc_i18n() {
+  true
+}

@@ -1,0 +1,92 @@
+#!/bin/sh
+. ./download-methods
+. ./supported-files
+. ./error-handler
+
+# see if a file is on the supported files list
+
+check_file_list(){
+  for somefile in $valid_files
+  do
+    if [ "$1" = "$somefile" ]
+    then
+      hit_status=true
+      return $hit_status
+    fi
+  done
+  fail "File not found in the list of valid files."
+}
+
+# see if a file already exists
+
+# there are better general ways to check for file existence using globs, i.e.:
+# test -n "$(find . -maxdepth 1 -name 'glob*' -print -quit)"
+# but in this case, we want to fail if the glob is too greedy
+
+exists_in_local(){
+  name_partial="$1"
+  testerror=$(test -e "$name_partial"* 2>&1)
+  test_result="$?" # this is the result of the subshell, not the assignment
+  if $test_result -eq 0
+  then
+    return $test_result
+  elif $test_result -eq 1
+  then
+    return $test_result
+  elif $test_result -eq 2
+  then
+    error "$testerror"
+    error "Check for existing file encountered more than one positive result."
+    fail "Bad filename glob used to determine if local file exists."
+  else
+    error "$testerror"
+    fail "Unexpected result from test command."
+  fi
+}
+
+# hash a file
+# alpine:latest has sha256sum
+
+hash_file(){
+  sha256sum "$1" > "$1".sha256
+}
+
+# encrypt a file
+
+encrypt_local(){
+  true
+}
+
+# compare a local hash to a remote hash
+
+compare_hashes(){
+  download "$1" "hash"
+}
+
+# move old version and hash to another directory for discretionary deletion
+
+move_previous(){
+  mv -n -t ./old ./"$1"*
+}
+
+main() {
+  if [ "$2" ]
+  then
+    fail "Incorrect number of arguments. Only pass pre-formatted file name."
+  fi
+
+  check_file_list "$1"
+  if exists_in_local "$1"
+  then
+    if compare_hashes "$1"
+    then
+      exit 0
+    fi
+  fi
+  move_previous "$1"
+  download "$1" "file"
+  hash_file "$1"
+  encrypt_local "$1"
+}
+
+main "$@"
