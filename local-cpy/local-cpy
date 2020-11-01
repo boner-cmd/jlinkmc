@@ -57,17 +57,14 @@ encrypt_local(){
 }
 
 # compare a local hash to a remote hash
-# there are no remote hashes
-# therefore a new download must be done no matter what
-# only workaround would be checking file names, which is beyond imprecise
-# TODO need to figure out if sha256sum will allow comparing a hash to a file with a diff name
 
 compare_hashes(){
+
   download "$1" "hash"
   # complications here from fuzzy naming with globs
-
-
-
+  remote_hash=
+  local_hash=
+  return "$( [ "$remote_hash" = "$local_hash" ] )"
 }
 
 # move old version and hash to another directory for discretionary deletion
@@ -80,15 +77,15 @@ move_previous(){
 
 clean_local(){
   for file in ./* ; do
-    # ${file: :-10} works in alpine but is technically not POSIX-compliant
-    trimmed_filename=$(echo "$file" | cut -b -$(( ${#file} - 10)))
-    if [ "$file" != "${trimmed_filename}.sha256sum" ] # file is not a sha256sum
+    trimmed_ext="${file##*.}"
+    if [ "$trimmed_ext" != "sha256sum" ] # file is not a sha256sum
     then
       if [ ! -e "${file}.sha256sum" ] # check for corresponding hash
       then
         rm "$file" # delete orphaned file
       fi
     else # file is a sha256sum
+      trimmed_filename="${file%.*}"
       if [ ! -e "$trimmed_filename" ] # check for corresponding file
       then
         rm "$file" # delete orphaned hash
