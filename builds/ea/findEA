@@ -1,43 +1,17 @@
 #!/bin/sh
 
-# use Bourne shell if we can
-# might need to use buildins instead of sed
-# no process substitution in sh, issue?
-
-find_download() {
-  sedargs="
-          /Alpine/,/sha256/ !d; \
-          1 d; \
-          s,.*href=\",,g; \
-          s,\">.*,,g; \
-
-
-          "
-
-  readonly sedargs
-  output="$(sed "${sedargs}" <(printf %s "${1}"))"
-  printf "%s\n" "$output"
-}
-
-# find_sha() {
-#   sedargs=""
-#   readonly sedargs
-#   output="$(sed "${sedargs}" <(printf %s "${1}"))"
-#   printf "%s\n" "$output"
-# }
-
 main() {
   if [ ! -e template ]; then
     echo "No template in current directory." 1>&2 \
       && exit 1
   fi
 
-  readonly JDK_URL=""
-  readonly JDK_FILE=""
-  readonly JDK_SHA_FILE=""
-
-  curl -Lf "${JDK_URL}" -O
-  curl -LF "${JDK_SHA_FILE}" -O
+  # readonly JDK_URL=""
+  # readonly JDK_FILE=""
+  # readonly JDK_SHA_FILE=""
+  #
+  # curl -Lf "${JDK_URL}" -O
+  # curl -LF "${JDK_SHA_FILE}" -O
 }
 
 main
