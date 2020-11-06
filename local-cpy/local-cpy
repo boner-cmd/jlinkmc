@@ -4,6 +4,8 @@
 # assumes existence of github secret passed as env variable GPG_PASSPHRASE
 # decrypt with gpg --batch --passphrase "$GPG_PASSPHRASE" file.gpg
 
+# TODO need a workflow that doesn't rely on clobbering filenames
+
 . ./download-methods
 . ./supported-files
 . ./error-handler
@@ -21,8 +23,6 @@ check_file_list(){
   fail "File not found in the list of valid files."
 }
 
-# see if a file already exists
-
 exists_in_local(){
   name_partial="${1}"
   file_hits=0
@@ -37,58 +37,54 @@ exists_in_local(){
   if $file_hits -eq 0
   then
     return
+  elif $file_hits -eq 1
+  then
+    return
   else
     error "Check for existing file encountered more than one positive result."
     fail "Bad filename glob used to determine if local file exists."
   fi
 }
 
-# hash a file
-
 hash_file(){
-  sha256sum "$1" > "$1".sha256
+  shasum=$(sha256sum "$1")
+  echo "${shasum%% *}" > "${1}.sha256"
 }
-
-# encrypt a file
 
 encrypt_local(){
   # TODO add error handling
   gpg --batch --cipher-algo CAMELLIA128 --passphrase "$GPG_PASSPHRASE" -c "$1"
 }
 
-# compare a local hash to a remote hash
-
 compare_hashes(){
-
+  hash_name="${1}.sha256"
+  remote_hash_name="${hash_name}.remote" # naming enforced by download method
   download "$1" "hash"
-  # complications here from fuzzy naming with globs
-  remote_hash=
-  local_hash=
-  return "$( [ "$remote_hash" = "$local_hash" ] )"
+  local_hash=$(cat "$hash_name")
+  remote_hash=$(cat "$remote_hash_name")
+  rm "$remote_hash_name"
+  [ "$remote_hash" = "$local_hash" ]
+  return
 }
-
-# move old version and hash to another directory for discretionary deletion
 
 move_previous(){
   mv -n -t ./old ./"$1"*
 }
 
-# remove files without matching sha256sums and sha256sums without matching files
-
-clean_local(){
+remove_orphans(){
   for file in ./* ; do
-    trimmed_ext="${file##*.}"
-    if [ "$trimmed_ext" != "sha256sum" ] # file is not a sha256sum
+    trimmed_ext="${file##*.}" # TODO will trim wrong if periods in filename?
+    if [ "$trimmed_ext" != "sha256" ]
     then
-      if [ ! -e "${file}.sha256sum" ] # check for corresponding hash
+      if [ ! -e "${file}.sha256" ]
       then
-        rm "$file" # delete orphaned file
+        rm "$file"
       fi
-    else # file is a sha256sum
+    else
       trimmed_filename="${file%.*}"
       if [ ! -e "$trimmed_filename" ] # check for corresponding file
       then
-        rm "$file" # delete orphaned hash
+        rm "$file"
       fi
     fi
   done
@@ -99,7 +95,7 @@ main() {
   then
     fail "Incorrect number of arguments. Only pass pre-formatted file name."
   fi
-  clean_local
+  remove_orphans
   check_file_list "$1"
   if exists_in_local "$1"
   then
