@@ -82,7 +82,7 @@ remove_orphans(){
       fi
     else
       trimmed_filename="${file%.*}"
-      if [ ! -e "$trimmed_filename" ] # check for corresponding file
+      if [ ! -e "$trimmed_filename" ]
       then
         rm "$file"
       fi
