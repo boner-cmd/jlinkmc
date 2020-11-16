@@ -49,7 +49,7 @@ get_ea_jdk() {
             s,.*href=\",,g; \
             s,\">.*,,g; \
             /sha256/" # not valid until 'd' appended
-  append_remote=
+  append_remote= # defined here to prevent scope issues
 
   case "$1" in
     f) alpine_sed_args="${alpine_sed_args}d"
