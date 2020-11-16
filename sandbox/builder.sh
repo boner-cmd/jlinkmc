@@ -1,5 +1,4 @@
-#!/bin/bash
-# needs bash for array functionality when getting sums
+#!/bin/sh
 
 if [ ! -e template ]; then
   echo "No template in current directory." 1>&2 \
@@ -34,18 +33,19 @@ curl -Lf "${SASHA_GERRAND_KEY_URL}" -O \
 curl -Lf "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
   || exit 1
 
-declare -a sums
+export sums
 for file in *; do
-  sums+=("$(sha256sum "./${file}" | head -c 64)")
+  filesum=$(sha256sum "./${file}" | head -c 64)
+  sums="${sums} $filesum"
 done
 readonly sums
 
 # indices are hardcoded to assume only these four (4) files in this order:
 # GLIBC, GLIBC BIN, GLIBC I18N, Sasha Gerrand's RSA
-readonly GLIBC_FILE_SUM="${sums[0]}"
-readonly GLIBC_BIN_SUM="${sums[1]}"
-readonly GLIBC_I18N_SUM="${sums[2]}"
-readonly SASHA_GERRAND_RSA_SUM="${sums[3]}"
+readonly GLIBC_FILE_SUM="$(echo "$sums" | awk '{print $1}')"
+readonly GLIBC_BIN_SUM="$(echo "$sums" | awk '{print $2}')"
+readonly GLIBC_I18N_SUM="$(echo "$sums" | awk '{print $3}')"
+readonly SASHA_GERRAND_RSA_SUM="$(echo "$sums" | awk '{print $4}')"
 
 cp ../template template
 
