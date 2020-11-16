@@ -45,17 +45,8 @@ FROM prepack
 COPY --from=jlink /jlinked /opt/java/openjdk
 ENV PATH="/opt/java/openjdk/bin:${PATH}"
 
-WORKDIR /tmp
-
-RUN mkdir gcc libz
-
 WORKDIR /tmp/depends
 
-ENV GCC_FULL_URL="GCC_FULL_URL_"
-ENV GCC_LIBS_VER="GCC_LIBS_VER_"
-ENV GCC_FILENAME="GCC_FILENAME_"
-ENV GCC_FILE_SUM="GCC_FILE_SUM_"
-ENV GCC_TAR_NAME="GCC_TAR_NAME_"
 ENV GLIBC_FULL_URL="GLIBC_FULL_URL_"
 ENV GLIBC_VER="GLIBC_VER_"
 ENV GLIBC_FILENAME="GLIBC_FILENAME_"
@@ -66,38 +57,26 @@ ENV GLIBC_BIN_SUM="GLIBC_BIN_SUM_"
 ENV GLIBC_I18N_URL="GLIBC_I18N_URL_"
 ENV GLIBC_I18N_FILENAME="GLIBC_I18N_FILENAME_"
 ENV GLIBC_I18N_SUM="GLIBC_I18N_SUM_"
-ENV ZLIB_FULL_URL="ZLIB_FULL_URL_"
-ENV ZLIB_VER="ZLIB_VER_"
-ENV ZLIB_FILENAME="ZLIB_FILENAME_"
-ENV ZLIB_FILE_SUM="ZLIB_FILE_SUM_"
 
-RUN curl -LfsS "${GCC_FULL_URL}" -O \
-	&& curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
-	&& curl -LfsS "${ZLIB_FULL_URL}" -O \
-	&& echo "${GCC_FILE_SUM}  ${GCC_FILENAME}" | sha256sum -c - \
+RUN curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
 	&& echo "${GLIBC_FILE_SUM}  ${GLIBC_FILENAME}" | sha256sum -c - \
 	&& echo "${GLIBC_BIN_SUM}  ${GLIBC_BIN_FILENAME}" | sha256sum -c - \
 	&& echo "${GLIBC_I18N_SUM}  ${GLIBC_I18N_FILENAME}" | sha256sum -c - \
-	&& echo "${ZLIB_FILE_SUM}  ${ZLIB_FILENAME}" | sha256sum -c - \
-	&& apk del --purge curl \
 	&& apk add --no-cache glibc-${GLIBC_VER}.apk \
-					glibc-bin-${GLIBC_VER}.apk \
-					glibc-i18n-${GLIBC_VER}.apk \
-    && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
-    && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
-	&& unzstd "${GCC_FILENAME}" -o "${GCC_TAR_NAME}" \
-	&& tar -xf "${GCC_TAR_NAME}" -C /tmp/gcc \
-    && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
-    && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
-    && tar -xf ${ZLIB_FILENAME} -C /tmp/libz \
-    && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
+		                    glibc-bin-${GLIBC_VER}.apk \
+					              glibc-i18n-${GLIBC_VER}.apk \
+  && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
+  && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
+  && ln -s /usr/lib/libgcc* /usr/glibc-compat/lib \
+  && ln -s /usr/lib/libstdc++.so* /usr/glibc-compat/lib \
+  && ln -s /lib/libz.so* /usr/glibc-compat/lib \
+  && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
 	&& apk del --purge binutils \
-						glibc-i18n \
-						zstd \
-    && rm -r /tmp/gcc \
-			/tmp/depends \
-			/tmp/libz \
-			/tmp/binutilscpy \
-			/var/cache/apk/*
+                     curl \
+						         glibc-i18n \
+						         zstd \
+  && rm -r /tmp/depends \
+			     /tmp/binutilscpy \
+			     /var/cache/apk/*
 
 CMD ["java", "-version"]
