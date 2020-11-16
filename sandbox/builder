@@ -116,11 +116,6 @@ main() {
     s,ZLIB_FILE_SUM_,${ZLIB_FILE_SUM},;" template \
   || exit 1
 
-  # stamp the generation date last
-  readonly READY_DATE="$(date -R)"
-  sed -i "s/DATE_/${READY_DATE}/" template \
-  || exit 1
-
   cat template
 }
 
