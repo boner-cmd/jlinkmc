@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # requires gnupg
+# indirectly requires curl for download-methods
 # assumes existence of github secret passed as env variable GPG_PASSPHRASE
 # decrypt with gpg --batch --passphrase "$GPG_PASSPHRASE" file.gpg
 
