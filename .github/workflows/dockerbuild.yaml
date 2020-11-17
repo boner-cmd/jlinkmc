@@ -99,32 +99,3 @@ jobs:
           tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
-
-  tryea:
-    name: Try the early access image
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: ./builds/.buildx-cache
-          key: buildx-ea-${{ github.sha }}
-          restore-keys: buildx-ea-
-      -
-        name: Build and cache the early access container
-        uses: docker/build-push-action@v2
-        with:
-          file: ./builds/ea/Dockerfile
-          build-args: JDK_VERSION=16
-          tags: ethco/jlinkmc:jdk16, ethco/jlinkmc:ea
-          cache-from: type=local,src=./builds/.buildx-cache
-          cache-to: type=local,dest=./builds/.buildx-cache
