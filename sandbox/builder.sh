@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -e template ]; then
+if [ ! -e template.dockerfile ]; then
   echo "No template in current directory." 1>&2 \
     && exit 1
 fi
@@ -47,7 +47,7 @@ readonly GLIBC_BIN_SUM="$(echo "$sums" | awk '{print $2}')"
 readonly GLIBC_I18N_SUM="$(echo "$sums" | awk '{print $3}')"
 readonly SASHA_GERRAND_RSA_SUM="$(echo "$sums" | awk '{print $4}')"
 
-cp ../template template
+cp ../template.dockerfile template
 
 sed -i "s,SASHA_GERRAND_RSA_SUM_,${SASHA_GERRAND_RSA_SUM},; \
   s,SASHA_GERRAND_KEY_URL_,${SASHA_GERRAND_KEY_URL},; \
