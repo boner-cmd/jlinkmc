@@ -58,6 +58,8 @@ ENV GLIBC_I18N_URL="GLIBC_I18N_URL_"
 ENV GLIBC_I18N_FILENAME="GLIBC_I18N_FILENAME_"
 ENV GLIBC_I18N_SUM="GLIBC_I18N_SUM_"
 
+# TODO ensure symlinks don't cause issues when original files are stripped
+
 RUN curl -LfsS "${GLIBC_FULL_URL}" "${GLIBC_BIN_URL}" "${GLIBC_I18N_URL}" -O -O -O \
 	&& echo "${GLIBC_FILE_SUM}  ${GLIBC_FILENAME}" | sha256sum -c - \
 	&& echo "${GLIBC_BIN_SUM}  ${GLIBC_BIN_FILENAME}" | sha256sum -c - \
