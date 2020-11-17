@@ -1,2 +1,3 @@
 /no-dist
 .github/workflows/getserv.yaml
+/local-cpy

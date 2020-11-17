@@ -2,7 +2,7 @@
 
 # requires curl
 
-. ./error-handler
+. ./error-handler.sh
 
 download() {
   bad_first_opt="Download method was called without a valid filename input."

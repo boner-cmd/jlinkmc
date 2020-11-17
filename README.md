@@ -4,7 +4,7 @@
 
 + `latest` `stable` `jdk15`
 + `oldstable` `jdk14`
-+ `ea` `jdk16`
++ ~~`ea` `jdk16`~~ (Portola integration on hold)
 
 Stability refers to the JDK, not to the container, which is _perpetually unstable_.
 
@@ -19,8 +19,6 @@ The transition to Portola or another muslc build will occur when an Alpine JDK r
 # Compressed Size Comparison of linux/amd64 images
 
 ![Size Reduction](https://img.shields.io/badge/Size%20Reduction-64.69%25-brightgreen)
-
-+ ethco/jlinkmc:jdk16 - 53.76 MB
 
 + ethco/jlinkmc:jdk15 - 73.09 MB
 
@@ -50,4 +48,4 @@ Minecraft itself requires all of the above except java.instrument
 
 # Source
 
-I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). Builds for the current GA JDK, the previous JDK, and the current EA JDK are automated by GitHub Actions. Issues are enabled, so if something doesn't work, let me know! Testing and any other suggestions are always welcomed.
+I track my own edits on [GitHub](https://github.com/boner-cmd/jlinkmc). Builds for the current GA JDK, the previous JDK, ~~and the current EA JDK~~ are automated by GitHub Actions. Issues are enabled, so if something doesn't work, let me know! Testing and any other suggestions are always welcomed.
