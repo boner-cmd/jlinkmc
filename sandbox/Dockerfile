@@ -2,7 +2,7 @@ FROM alpine:latest
 
 RUN apk update && apk add --no-cache curl
 
-COPY builder .
-COPY template .
+COPY builder.sh .
+COPY template.dockerfile .
 
 CMD ["./builder.sh"]
