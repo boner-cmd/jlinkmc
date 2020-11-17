@@ -7,9 +7,9 @@
 
 # TODO need a workflow that doesn't rely on clobbering filenames
 
-. ./download-methods
-. ./supported-files
-. ./error-handler
+. ./download-methods.sh
+. ./supported-files.sh
+. ./error-handler.sh
 
 # see if a file is on the supported files list
 
