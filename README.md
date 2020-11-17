@@ -14,7 +14,7 @@ Using this image to prepare a [PaperMC](https://papermc.io/) or other Minecraft 
 
 The `latest` tag is NOT an Alpine-native muslc (Portola) Java build. Instead, it uses [Sasha Gerrand](https://github.com/sgerrand)'s Gnu C library compatibility layer package for Alpine.
 
-The transition to Portola or another muslc build will occur when an Alpine JDK reaches General Availability and will result in further size reduction. Unfortunately, Alpine JDKs havent' been making the testing volume threshold for GA status, which is why they keep getting rolled to the next EA candidate. The build using the early access JDK can be found in the `ea` tag.
+The transition to Portola or another muslc build will occur when an Alpine JDK reaches General Availability and will result in further size reduction. Unfortunately, Alpine JDKs haven't been making the testing volume threshold for GA status, which is why they keep getting rolled to the next EA candidate. The build using the early access JDK can be found in the `ea` tag.
 
 # Compressed Size Comparison of linux/amd64 images
 
