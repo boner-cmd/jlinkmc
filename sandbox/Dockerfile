@@ -5,4 +5,4 @@ RUN apk update && apk add --no-cache curl
 COPY builder.sh .
 COPY template.dockerfile .
 
-CMD ["./builder.sh"]
+ENTRYPOINT ["./builder.sh"]
