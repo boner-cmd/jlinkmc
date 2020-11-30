@@ -69,7 +69,7 @@ jobs:
         with:
           file: ./builds/stable/Dockerfile
           build-args: JDK_VERSION=15
-          tags: ethco/jlinkmc:latest, ethco/jlinkmc:jdk15, ethco/jlinkmc:stable
+          tags: ethco/jlinkmc:latest,ethco/jlinkmc:jdk15,ethco/jlinkmc:stable
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
 
@@ -99,6 +99,6 @@ jobs:
         with:
           file: ./builds/oldstable/Dockerfile
           build-args: JDK_VERSION=14
-          tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
+          tags: ethco/jlinkmc:jdk14,ethco/jlinkmc:oldstable
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
