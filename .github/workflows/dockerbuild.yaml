@@ -28,7 +28,7 @@ jobs:
       -
         name: Grab built files
         run: |
-#          docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
+          docker cp buildercon:/working/template ./builds/oldstable/Dockerfile
           docker cp buildercon:/working/template ./builds/stable/Dockerfile
       -
         name: Commit changes to repo
@@ -73,32 +73,32 @@ jobs:
           cache-from: type=local,src=./builds/.buildx-cache
           cache-to: type=local,dest=./builds/.buildx-cache
 
-  # tryoldstable:
-  #   needs: prepare
-  #   name: Try the old stable image
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     -
-  #       name: Checkout code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         ref: ${{ github.ref }}
-  #     -
-  #       name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
-  #     -
-  #       name: Cache Docker layers
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ./builds/.buildx-cache
-  #         key: buildx-oldstable-${{ github.sha }}
-  #         restore-keys: buildx-oldstable-
-  #     -
-  #       name: Build and cache the old stable container
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         file: ./builds/oldstable/Dockerfile
-  #         build-args: JDK_VERSION=14
-  #         tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
-  #         cache-from: type=local,src=./builds/.buildx-cache
-  #         cache-to: type=local,dest=./builds/.buildx-cache
+  tryoldstable:
+    needs: prepare
+    name: Try the old stable image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: ./builds/.buildx-cache
+          key: buildx-oldstable-${{ github.sha }}
+          restore-keys: buildx-oldstable-
+      -
+        name: Build and cache the old stable container
+        uses: docker/build-push-action@v2
+        with:
+          file: ./builds/oldstable/Dockerfile
+          build-args: JDK_VERSION=14
+          tags: ethco/jlinkmc:jdk14, ethco/jlinkmc:oldstable
+          cache-from: type=local,src=./builds/.buildx-cache
+          cache-to: type=local,dest=./builds/.buildx-cache
