@@ -1,4 +1,6 @@
 # please don't modify this file directly; it was generated using scripts
+# TODO workflow can fail if template doesn't change between runs?
+
 
 # Determine which version of OpenJDK to use later
 ARG JDK_VERSION=15
