@@ -1,5 +1,5 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Tue, 23 Feb 2021 00:31:26 +0000
+# this specific Dockerfile was generated Thu, 25 Feb 2021 00:31:43 +0000
 
 # Determine which version of OpenJDK to use later
 ARG JDK_VERSION=15
@@ -57,16 +57,16 @@ ENV GCC_LIBS_VER="gcc-libs-9.3.0-1-x86_64"
 ENV GCC_FILENAME="gcc-libs-9.3.0-1-x86_64.pkg.tar.zst"
 ENV GCC_FILE_SUM="ccba6f5341008a3d693d7aeaf2423d2339a690b739b23a52dd03335acbcd94ab"
 ENV GCC_TAR_NAME="gcc-libs-9.3.0-1-x86_64.pkg.tar"
-ENV GLIBC_FULL_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-2.32-r0.apk"
-ENV GLIBC_VER="2.32-r0"
-ENV GLIBC_FILENAME="glibc-2.32-r0.apk"
-ENV GLIBC_FILE_SUM="2a3cd1111d2b42563e90a1ace54c3e000adf3a5a422880e7baf628c671b430c5"
-ENV GLIBC_BIN_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-bin-2.32-r0.apk"
-ENV GLIBC_BIN_FILENAME="glibc-bin-2.32-r0.apk"
-ENV GLIBC_BIN_SUM="d5bd83be68d92cf473d63dab57e28bd1bcd1a2706bbe1889f381262e9b4103a1"
-ENV GLIBC_I18N_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-i18n-2.32-r0.apk"
-ENV GLIBC_I18N_FILENAME="glibc-i18n-2.32-r0.apk"
-ENV GLIBC_I18N_SUM="403aad102335eee461a2ef3d7221a353c68bac4480418863179892b03e7ae2ea"
+ENV GLIBC_FULL_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.33-r0/glibc-2.33-r0.apk"
+ENV GLIBC_VER="2.33-r0"
+ENV GLIBC_FILENAME="glibc-2.33-r0.apk"
+ENV GLIBC_FILE_SUM="3ce2b708b17841bc5978da0fa337fcb90fec5907daa396585db68805754322e0"
+ENV GLIBC_BIN_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.33-r0/glibc-bin-2.33-r0.apk"
+ENV GLIBC_BIN_FILENAME="glibc-bin-2.33-r0.apk"
+ENV GLIBC_BIN_SUM="f862ce6d61b294859f3facd1dae347e7bc5e36714649a37d2a785e7d7a3af84e"
+ENV GLIBC_I18N_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.33-r0/glibc-i18n-2.33-r0.apk"
+ENV GLIBC_I18N_FILENAME="glibc-i18n-2.33-r0.apk"
+ENV GLIBC_I18N_SUM="be3a55e6366a2ddaecf17203a7e71966757dca47a25ce34b5f3d6dd1e1efee55"
 ENV ZLIB_FULL_URL="https://archive.archlinux.org/packages/z/zlib/zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
 ENV ZLIB_VER="zlib-1%3A1.2.11-4-x86_64"
 ENV ZLIB_FILENAME="zlib-1%3A1.2.11-4-x86_64.pkg.tar.xz"
