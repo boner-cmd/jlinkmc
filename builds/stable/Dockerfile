@@ -1,5 +1,5 @@
 # please don't modify this file directly; it was generated using scripts
-# this specific Dockerfile was generated Mon, 31 May 2021 01:51:13 +0000
+# this specific Dockerfile was generated Tue, 01 Jun 2021 02:10:41 +0000
 
 # Determine which version of OpenJDK to use later
 ARG JDK_VERSION=15
